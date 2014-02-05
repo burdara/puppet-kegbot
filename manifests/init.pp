@@ -28,14 +28,22 @@
 #  }
 #
 # === Authors
+# Robbie Burda <github.com/burdara>
 #
-# Author Name <author@domain.com>
-#
-# === Copyright
-#
-# Copyright 2014 Your name here, unless otherwise noted.
-#
-class kegbot {
-
-
+class kegbot (
+    $database = hiera('kegbot::database', 'sqlite')
+    ){
+    
+    case $database {
+        'mysql': {
+            include kegbot::database::mysql
+        }
+        'sqlite': {
+            include kegbot::database::sqlite
+        }
+        default: {
+            fail("Unsupported database: ${database}. Kegbot currently only supports: sqlite, mysql")
+        }
+    }
+    include kegbot::server
 }
