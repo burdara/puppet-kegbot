@@ -45,5 +45,7 @@ class kegbot (
             fail("Unsupported database: ${database}. Kegbot currently only supports: sqlite, mysql")
         }
     }
-    include kegbot::server
+    include kegbot::server {
+        database = $database
+    }
 }
