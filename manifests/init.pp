@@ -45,11 +45,13 @@ class kegbot (
     $packages     = $::kegbot::params::packages
 ) inherits kegbot::params 
 {
-    include datebase::init
+    include datebase
     include config
     include install
+    include server
 
-    Class['database::init'] ->
-    Class['config'] ~>
-    Class['install']
+    Class['database'] ->
+    Class['config'] ->
+    Class['install'] ->
+    Class['server']
 }
