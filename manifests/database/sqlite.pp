@@ -10,12 +10,7 @@
 # Robbie Burda <github.com/burdara>
 #
 class kegbot::database::sqlite {
-
-    $packages = [
-        'python-sqlite'
-    ]
-
-    exec { $packages: 
+    exec { ${::kegbot::database::sqlite_packages}: 
         ensure => latest
     }
 }

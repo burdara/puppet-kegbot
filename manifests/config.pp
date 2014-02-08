@@ -12,7 +12,7 @@
 class kegbot::config {
     file {
         'create_config_dir':
-            path   => $::kegbot::config_dir: 
+            path   => $::kegbot::config_dir,
             ensure => directory;
         'create_config_file':
             path   => $::kegbot::config_file,

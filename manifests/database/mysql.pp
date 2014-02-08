@@ -13,38 +13,29 @@ class kegbot::database::mysql {
     # Set default exec path for this module
     Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
 
-    $packages = [
-        'mysql-server',
-        'mysql-client'
-    ]
-    exec { $packages: 
-        ensure => latest
+    exec { 
+        'set-root-pwd':
+            command     => "mysqladmin -u root password '${::kegbot::database::mysql_pwd}'",
+            subscribe   => Package['mysql-server'],
+            refreshonly => true;
+        'create-kegbot-db':
+            command => "mysql -uroot -p${::kegbot::database::mysql_pwd} -e 'create database kegbot;' -sN",
+            onlyif  => "test `mysql -uroot -p${::kegbot::database::mysql_pwd} -e 'show databases;' -sN | grep -c '^kegbot$'` -eq 0";
+        'create-kegbot-db-user':
+            command => "mysql -uroot -p${::kegbot::database::mysql_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to kegbot@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
+            unless  => "mysql -ukegbot -p${::kegbot::kegbot_pwd} kegbot -e 'show tables;'";
     }
 
+    exec { ${::kegbot::database::mysql_packages}: 
+        ensure => latest
+    } ->
     service{ 'mysql':
         ensure     => running,
         enable     => true,
         hasstatus  => true,
-        hasrestart => true,
-        require    => Package['mysql-server']
-    }
-
-    exec { 'setRootPwd':
-        command     => "mysqladmin -u root password '${::kegbot::mysql_pwd}'",
-        subscribe   => Package['mysql-server'],
-        refreshonly => true,
-        require     => Service['mysql']
-    }
-
-    exec { 'createKegbotDb':
-        command => "mysql -uroot -p${::kegbot::mysql_pwd} -e 'create database kegbot;' -sN",
-        onlyif  => "test `mysql -uroot -p${::kegbot::mysql_pwd} -e 'show databases;' -sN | grep -c '^kegbot$'` -eq 0",
-        require => Exec['setRootPwd']
-    }
-
-    exec { 'createKegbotDbUser':
-        command => "mysql -uroot -p${::kegbot::mysql_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to kegbot@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
-        unless  => "mysql -ukegbot -p${::kegbot::kegbot_pwd} kegbot -e 'show tables;'",
-        require => Exec['createKegbotDb']
-    }
+        hasrestart => true
+    } ->
+    Exec['set-root-pwd'] ->
+    Exec['create-kegbot-db'] ->
+    Exec['create-kegbot-db-user']
 }
