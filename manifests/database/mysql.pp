@@ -1,4 +1,4 @@
-# == Class: kegbot::database
+# == Class: kegbot::database::mysql
 #
 # === Parameters
 #
@@ -9,11 +9,7 @@
 # === Authors
 # Robbie Burda <github.com/burdara>
 #
-class kegbot::database (
-    $root_pwd   = hiera('kegbot::db_root_pwd',   'beerMe123'),
-    $kegbot_pwd = hiera('kegbot::db_kegbot_pwd', 'beerMe123')
-    ){
-
+class kegbot::database::mysql {
     # Set default exec path for this module
     Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
 
@@ -21,7 +17,6 @@ class kegbot::database (
         'mysql-server',
         'mysql-client'
     ]
-
     exec { $packages: 
         ensure => latest
     }
@@ -35,21 +30,21 @@ class kegbot::database (
     }
 
     exec { 'setRootPwd':
-        command     => "mysqladmin -u root password '$root_pwd'",
+        command     => "mysqladmin -u root password '${::kegbot::mysql_pwd}'",
         subscribe   => Package['mysql-server'],
         refreshonly => true,
         require     => Service['mysql']
     }
 
     exec { 'createKegbotDb':
-        command => "mysql -uroot -p$root_pwd -e 'create database kegbot;' -sN",
-        onlyif  => "test `mysql -uroot -p$root_pwd -e 'show databases;' -sN | grep -c '^kegbot$'` -eq 0",
+        command => "mysql -uroot -p${::kegbot::mysql_pwd} -e 'create database kegbot;' -sN",
+        onlyif  => "test `mysql -uroot -p${::kegbot::mysql_pwd} -e 'show databases;' -sN | grep -c '^kegbot$'` -eq 0",
         require => Exec['setRootPwd']
     }
 
     exec { 'createKegbotDbUser':
-        command => "mysql -uroot -p$root_pwd -e 'GRANT ALL PRIVILEGES ON kegbot.* to kegbot@localhost IDENTIFIED BY \"$kegbot_pwd\";' -sN",
-        unless  => "mysql -ukegbot -p$kegbot_pwd kegbot -e 'show tables;'",
+        command => "mysql -uroot -p${::kegbot::mysql_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to kegbot@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
+        unless  => "mysql -ukegbot -p${::kegbot::kegbot_pwd} kegbot -e 'show tables;'",
         require => Exec['createKegbotDb']
     }
 }

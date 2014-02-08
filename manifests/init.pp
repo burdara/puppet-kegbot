@@ -31,21 +31,25 @@
 # Robbie Burda <github.com/burdara>
 #
 class kegbot (
-    $database = hiera('kegbot::database', 'sqlite')
-    ){
-    
-    case $database {
-        'mysql': {
-            include kegbot::database::mysql
-        }
-        'sqlite': {
-            include kegbot::database::sqlite
-        }
-        default: {
-            fail("Unsupported database: ${database}. Kegbot currently only supports: sqlite, mysql")
-        }
-    }
-    include kegbot::server {
-        database = $database
-    }
+    $install_dir  = $::kegbot::params::install_dir,
+    $data_dir     = $::kegbot::params::data_dir,
+    $config_dif   = $::kegbot::params::config_dir,
+    $log_dir      = $::kegbot::params::log_dir,
+    $database     = $::kegbot::params::database,
+    $mysql_pwd    = $::kegbot::params::mysql_pwd,
+    $kegbot_pwd   = $::kegbot::params::kegbot_pwd,
+    $bind         = $::kegbot::params::bind,
+    $config_file  = $::kegbot::params::config_file,
+    $config_owner = $::kegbot::params::config_owner,
+    $config_group = $::kegbot::params::config_group,
+    $packages     = $::kegbot::params::packages
+) inherits kegbot::params 
+{
+    include datebase::init
+    include config
+    include install
+
+    Class['database::init'] ->
+    Class['config'] ~>
+    Class['install']
 }
