@@ -15,7 +15,7 @@ class kegbot::install {
 
     # === 1 Setup
     # Install package dependencies
-    package { $::kegbot::packages:
+    package { ${::kegbot::packages}:
         ensure => latest
     }
     
@@ -52,10 +52,7 @@ class kegbot::install {
     exec { 'setup-server': 
         command => $setup_server_command,
         creates => $data_dir,
-        require => [
-            File['create_config_file'],
-            Exec['install-server']
-        ]
+        require => Exec['install-server']
     }
 
     $pip_upgrade = "${::kegbot::install_dir}/bin/pip install --upgrade kegbot"
