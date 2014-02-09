@@ -36,7 +36,7 @@ class kegbot::install {
     }
 
     # === 3 Install and setup server
-    $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
+    $source_env_activate = ". ${::kegbot::install_dir}/bin/activate"
 
     $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
     $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
