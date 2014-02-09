@@ -1,0 +1,9 @@
+--data_root=<%= scope.lookupvar('kegbot::data_dir') %>
+--db_database=kegbot
+--db_password=<%= scope.lookupvar('kegbot::kegbot_pwd') %>
+--db_type=<%= scope.lookupvar('kegbot::database_type') %>
+--db_user=kegbot
+--nointeractive
+--noreplace_data
+--replace_settings
+--settings_dir=<%= scope.lookupvar('kegbot::config_dir') %>
