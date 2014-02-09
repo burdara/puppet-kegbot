@@ -16,16 +16,16 @@ class kegbot::install {
     # === 1 Setup
     # Install package dependencies
 
-    package { ${::kegbot::kegbot_packages}:
+    package { $::kegbot::kegbot_packages:
         ensure => latest
     }
 
     # Create server directories
-    file { ${::kegbot::install_dir}:
+    file { $::kegbot::install_dir:
         ensure => directory
     }
 
-    file { ${::kegbot::data_dir}:
+    file { $::kegbot::data_dir:
         ensure => absent
     }
 
