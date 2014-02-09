@@ -20,8 +20,6 @@ class kegbot::params {
     $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
     $bind          = hiera('kegbot::bind',          '0.0.0.0:8000')
     $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")
-    $config_owner  = hiera('kegbot::config_owner',  'root')
-    $config_group  = hiera('kegbot::config_group',  'root')
     $mysql_pwd     = hiera('kegbot::mysql_pwd',     'beerMysql123')
     $kegbot_packages = [
         'build-essential',
@@ -31,6 +29,8 @@ class kegbot::params {
         'libsqlite3-0',
         'libsqlite3-dev',
         'memcached',
+        'mysql-client',
+        'mysql-server',
         'python-dev',
         'python-imaging',
         'python-mysqldb',
@@ -39,8 +39,7 @@ class kegbot::params {
         'virtualenvwrapper'
     ]
     $mysql_packages = [
-        'mysql-server',
-        'mysql-client'
+        'mysql-server'
     ]
     $sqlite_packages = [
         'python-sqlite'
