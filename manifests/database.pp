@@ -26,7 +26,6 @@ class kegbot::database (
     $mysql_packages  = $::kegbot::params::mysql_packages,
     $sqlite_packages = $::kegbot::params::sqlite_packages
     ) {
-
     case $::kegbot::database_type {
         mysql: {
             include mysql

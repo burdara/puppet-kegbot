@@ -19,8 +19,7 @@ class kegbot::params {
     $database_type = hiera('kegbot::database_type', 'sqlite')
     $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
     $bind          = hiera('kegbot::bind',          '0.0.0.0:8000')
-    $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")
-    $mysql_pwd     = hiera('kegbot::mysql_pwd',     'beerMysql123')
+    $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")    
     $kegbot_packages = [
         'build-essential',
         'git-core',
@@ -38,10 +37,19 @@ class kegbot::params {
         'python-virtualenv',
         'virtualenvwrapper'
     ]
-    $mysql_packages = [
+
+    # kegbot:database
+    $mysql_pwd = hiera('kegbot::mysql_pwd', 'beerMysql123')
+    $mysql_packages  = [
         'mysql-server'
     ]
     $sqlite_packages = [
         'python-sqlite'
     ]
+
+    # kegbot:extras
+    $install_sentry        = hiera('kegbot::install_sentry', false)
+    $sentry_url            = hiera('kegbot::sentry_url', 'http://foo:bar@localhost:9000/2')
+    $install_debug_toolbar = hiera('kegbot::install_sentry', false)
+    $install_statsd        = hiera('kegbot::install_sentry', false)
 }

@@ -1,34 +1,48 @@
 # == Class: kegbot::extras::sentry
 #
+# Installs Sentry using Raven
+#
 # === Parameters
+#
+# [kegbot::extras::sentry_url]
+#   sentry url from sentry dashboard
 #
 # === Variables
 #
-# === Examples
+# [kegbot::install_dir]
+#   server install directory
+# [kegbot::config_dir]
+#   server config directory
 #
 # === Authors
+#
 # Robbie Burda <github.com/burdara>
 #
 class kegbot::extras::sentry (
-    $install_dir = hiera('kegbot::install_dir' '/opt/kegbot'),
-    $sentry_url  = hiera('kegbot::sentry_url', 'http://foo:bar@localhost:9000/2')
+    $sentry_url  = hiera('kegbot::extras::sentry_url', 'http://foo:bar@localhost:9000/2')
     ){
 
     # Set default exec path for this module
     Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
 
-    $source_env_activate="source $install_dir/bin/activate"
-    $install_command = "$source_env_activate && $install_dir/bin/pip install raven"
-    exec { 'install-raven':
+    $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
+    $pip_raven = "${::kegbot::install_dir}/bin/pip install raven"
+    $install_command = "bash -c '${source_env_activate} && ${pip_raven}'"
+    exec { 'install_raven':
         command => $install_command,
         timeout => 600
     }
 
-    # TODO path?
-    $local_settings="TODO/local_settings.py"
-    file { 'local-settings':
-        path    => $local_settings,
-        content => template("kegbot/local_settings.py.erb"),
-        require => File['install-raven']
+    $tmp_local_settings = "${::kegbot::config_dif}/local_settings.raven.py"
+    file { 'local_raven_settings':
+        path    => $tmp_local_settings,
+        content => template("kegbot/local_settings.raven.py.erb"),
+        require => Exec['install_raven']
+    }
+
+    $local_settings = "${::kegbot::config_dif}/local_settings.py"
+    exec { 'append_raven_settings'
+        command => "/bin/cat ${tmp_local_settings} >> ${local_settings}",
+        require => Exec['local_raven_settings']
     }
 }

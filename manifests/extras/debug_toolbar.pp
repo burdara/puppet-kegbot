@@ -1,29 +1,34 @@
 # == Class: kegbot::extras::debug_toolbar
 #
+# Installs debug toolbar
+#
 # === Parameters
+#
+# None
 #
 # === Variables
 #
-# === Examples
+# [kegbot::install_dir]
+#   server install directory
 #
 # === Authors
+#
 # Robbie Burda <github.com/burdara>
 #
-class kegbot::extras::debug_toolbar (
-    $install_dir = hiera('kegbot::install_dir' '/opt/kegbot')
-    ){
-
+class kegbot::extras::debug_toolbar {
     # Set default exec path for this module
     Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
 
     $source_env_activate="source $install_dir/bin/activate"
-    $install_tb_command = "$source_env_activate && $install_dir/bin/pip install django-debug-toolbar"
+    $pip_debug_toolbar = "${::kegbot::install_dir}/bin/pip install django-debug-toolbar"
+    $install_tb_command = "bash -c '${source_env_activate} && ${pip_debug_toolbar}'"
     exec { 'install-debug-toolbar':
         command => $install_tb_command,
         timeout => 600
     }
     
-    $install_tb_memcache_command = "$source_env_activate && $install_dir/bin/pip install django-debug-toolbar-memcache"
+    $pip_debug_tb_memcache = "${::kegbot::install_dir}/bin/pip install django-debug-toolbar-memcache"
+    $install_tb_memcache_command = "bash -c '${source_env_activate} && ${pip_debug_tb_memcache}'"
     exec { 'install-debug-toolbar-memcache':
         command => $install_tb_memcache_command,
         timeout => 600,
