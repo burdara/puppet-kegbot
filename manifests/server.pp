@@ -13,7 +13,7 @@ class kegbot::server {
     # Set default exec path for this module
     Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
 
-    $source_env_activate = "source. ${::kegbot::install_dir}/bin/activate"
+    $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
 
     file { 'create_log_dir':
         path   => "$kegbot::log_dir",

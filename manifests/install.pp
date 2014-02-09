@@ -56,11 +56,11 @@ class kegbot::install {
         require => Exec['install_server']
     }
 
-    $pip_upgrade = "${::kegbot::install_dir}/bin/pip install --upgrade kegbot"
-    $upgrade_kegbot = "echo 'yes' | ${::kegbot::install_dir}/bin/kegbot kb_upgrade"
-    $upgrade_server_command = "bash -c '${source_env_activate} && ${pip_upgrade} && ${upgrade_kegbot}'"
-    exec { 'upgrade_server':
-        command => $upgrade_server_command,
-        require => Exec['setup_server']
-    }
+    #$pip_upgrade = "${::kegbot::install_dir}/bin/pip install --upgrade kegbot"
+    #$upgrade_kegbot = "echo 'yes' | ${::kegbot::install_dir}/bin/kegbot kb_upgrade"
+    #$upgrade_server_command = "bash -c '${source_env_activate} && ${pip_upgrade} && ${upgrade_kegbot}'"
+    #exec { 'upgrade_server':
+    #    command => $upgrade_server_command,
+    #    require => Exec['setup_server']
+    #}
 }
