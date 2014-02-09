@@ -42,9 +42,8 @@ class kegbot (
     $config_owner  = $::kegbot::params::config_owner,
     $config_group  = $::kegbot::params::config_group,
     $packages      = $::kegbot::params::kegbot_packages
-) inherits kegbot::params 
-{
-    include datebase
+    ) inherits kegbot::params {
+    include database
     include config
     include install
     include server

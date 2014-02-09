@@ -10,20 +10,17 @@
 # Robbie Burda <github.com/burdara>
 #
 class kegbot::database (
-    $mysql_pwd       = $::kegbot::database::params::mysql_pwd,
-    $mysql_packages  = $::kegbot::database::params::mysql_packages,
-    $sqlite_packages = $::kegbot::database::params::sqlite_packages
-) inherits kegbot::database::params 
-{
-    include mysql
-    include sqlite
-    
+    $mysql_pwd       = $::kegbot::params::mysql_pwd,
+    $mysql_packages  = $::kegbot::params::mysql_packages,
+    $sqlite_packages = $::kegbot::params::sqlite_packages
+    ) {
+
     case $::kegbot::database_type {
-        'mysql': {
-            Class['mysql']
+        mysql: {
+            include mysql
         }
-        'sqlite': {
-            Class['sqlite']
+        sqlite: {
+            include sqlite
         }
         default: {
             fail("Unsupported database_type: ${::kegbot::database_type}. Kegbot currently only supports: sqlite, mysql")

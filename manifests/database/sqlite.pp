@@ -1,16 +1,7 @@
 # == Class: kegbot::database::sqlite
-#
-# === Parameters
-#
-# === Variables
-#
-# === Examples
-#
-# === Authors
-# Robbie Burda <github.com/burdara>
-#
+#  This will install the sqlite package to support kegbot
 class kegbot::database::sqlite {
-    exec { ${::kegbot::database::sqlite_packages}: 
+    package { "${::kegbot::sqlite_packages}":
         ensure => latest
     }
 }

@@ -15,12 +15,13 @@ class kegbot::install {
 
     # === 1 Setup
     # Install package dependencies
-    package { ${::kegbot::kegbot_packages}:
+
+    package { $kegbot::kegbot_packages:
         ensure => latest
     }
-    
+
     # Create server directories
-    file { ${::kegbot::install_dir}:
+    file { "${kegbot::install_dir}":
         ensure => directory
     }
 
@@ -29,7 +30,7 @@ class kegbot::install {
         command => "virtualenv ${::kegbot::install_dir}",
         creates => "${::kegbot::install_dir}/bin/python",
         require => [
-            File[${::kegbot::install_dir}],
+            File["${kegbot::install_dir}"],
             Package['virtualenvwrapper']
         ]
     }
@@ -49,7 +50,7 @@ class kegbot::install {
 
     $setup_kegbot = "${::kegbot::install_dir}/bin/setup-kegbot.py --flagfile=${::kegbot::config_file}"
     $setup_server_command = "${source_env_activate} && ${setup_kegbot}"
-    exec { 'setup_server': 
+    exec { 'setup_server':
         command => $setup_server_command,
         creates => $data_dir,
         require => Exec['install_server']

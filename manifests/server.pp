@@ -16,7 +16,7 @@ class kegbot::server {
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
 
     file { 'create_log_dir':
-        path   => $::kegbot::log_dir
+        path   => "$kegbot::log_dir",
         ensure => directory
     }
 
@@ -26,13 +26,13 @@ class kegbot::server {
     # start celeryd
     $start_celeryd_command = "${source_env_activate} && ${::kegbot::install_dir}/bin/kegbot celeryd_detach -E"
 
-    exec { 
+    exec {
         'start_server':
             command => $start_server_command,
             require => File[$::kegbot::log_dir];
         'start_celeryd':
             command => $start_celeryd_command,
-            require => Exec['start-server'];
+            require => Exec['start_server'];
     }
 
     File['create_log_dir'] ->
