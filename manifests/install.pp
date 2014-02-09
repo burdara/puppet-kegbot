@@ -37,6 +37,7 @@ class kegbot::install {
         ensure => directory
     }
 
+    # Remove data directory, if exists
     file { $::kegbot::data_dir:
         ensure => absent
     }
