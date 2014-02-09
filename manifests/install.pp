@@ -1,13 +1,26 @@
 # == Class: kegbot::install
 #
+# Installs server and other server components
+#
 # === Parameters
+#
+# None
 #
 # === Variables
 #
-# === Examples
+# [kegbot::kegbot_packages]
+#   Kegbot dependency packages
+# [kegbot::install_dir]
+#   Install directory for server
+# [kegbot::config_file]
+#   server setup config gflags file
+# [kegbot::data_dir]
+#   Data directory for server
 #
 # === Authors
+#
 # Robbie Burda <github.com/burdara>
+# Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::install {
     # Set default exec path for this module
@@ -15,7 +28,6 @@ class kegbot::install {
 
     # === 1 Setup
     # Install package dependencies
-
     package { $::kegbot::kegbot_packages:
         ensure => latest
     }
@@ -34,7 +46,7 @@ class kegbot::install {
         command => "virtualenv ${::kegbot::install_dir}",
         creates => "${::kegbot::install_dir}/bin/python",
         require => [
-            File["${kegbot::install_dir}"],
+            File[$::kegbot::install_dir],
             Package['virtualenvwrapper']
         ]
     }
@@ -56,7 +68,7 @@ class kegbot::install {
     $setup_server_command = "bash -c '${source_env_activate} && ${setup_kegbot}'"
     exec { 'setup_server':
         command => $setup_server_command,
-        creates => $data_dir,
+        creates => $::kegbot::data_dir,
         require => Exec['install_server']
     }
 

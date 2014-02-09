@@ -1,13 +1,22 @@
 # == Class: kegbot:config
 #
+# Creates kegbot config files
+#
 # === Parameters
+#
+# None
 #
 # === Variables
 #
-# === Examples
+# [kegbot::config_dir]
+#   Config directory for server
+# [kegbot::config_file]
+#   Config file for server setup
 #
 # === Authors
+#
 # Robbie Burda <github.com/burdara>
+# Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::config {
     file {

@@ -1,13 +1,25 @@
 # == Class: kegbot::database
 #
+# Installs database for server
+#
 # === Parameters
+#
+# [mysql_pwd]
+#   MySql root password
+# [mysql_packages]
+#   MySql database packages
+# [sqlite_packages]
+#   Sqlite database packages
 #
 # === Variables
 #
-# === Examples
+# [kegbot::database_type]
+#   Database type for kegbot backend database
 #
 # === Authors
+#
 # Robbie Burda <github.com/burdara>
+# Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::database (
     $mysql_pwd       = $::kegbot::params::mysql_pwd,

@@ -1,16 +1,18 @@
 # == Class: kegbot::params
 #
+# Parameters for Kegbot
+#
 # === Parameters
 #
 # === Variables
 #
-# === Examples
-#
 # === Authors
+#
 # Robbie Burda <github.com/burdara>
+# Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::params {
-    $install_dir   = hiera('kegbot::install_dir',    '/opt/kegbot')
+    $install_dir   = hiera('kegbot::install_dir',   '/opt/kegbot')
     $data_dir      = hiera('kegbot::data_dir',      '/opt/kegbot/data')
     $config_dir    = hiera('kegbot::config_dir',    '/etc/kegbot')
     $log_dir       = hiera('kegbot::log_dir',       '/var/log/kegbot')
@@ -20,7 +22,7 @@ class kegbot::params {
     $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")
     $config_owner  = hiera('kegbot::config_owner',  'root')
     $config_group  = hiera('kegbot::config_group',  'root')
-    $mysql_pwd = hiera('kegbot::database::mysql_pwd', 'beerMysql123')
+    $mysql_pwd     = hiera('kegbot::mysql_pwd',     'beerMysql123')
     $kegbot_packages = [
         'build-essential',
         'git-core',
