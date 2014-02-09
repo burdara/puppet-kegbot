@@ -36,11 +36,11 @@ class kegbot::install {
     }
 
     # === 3 Install and setup server
-    $source_env_activate = "bash -c \"source ${::kegbot::install_dir}/bin/activate"
+    $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
 
     $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
     $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
-    $install_command = "${source_env_activate} && ${easy_install} && ${pip_install}\""
+    $install_command = "bash -c '${source_env_activate} && ${easy_install} && ${pip_install}'"
     exec { 'install_server':
         command => $install_command,
         creates => "${::kegbot::install_dir}/bin/kegbot",
@@ -49,7 +49,7 @@ class kegbot::install {
     }
 
     $setup_kegbot = "${::kegbot::install_dir}/bin/setup-kegbot.py --flagfile=${::kegbot::config_file}"
-    $setup_server_command = "${source_env_activate} && ${setup_kegbot}\""
+    $setup_server_command = "bash -c '${source_env_activate} && ${setup_kegbot}'"
     exec { 'setup_server':
         command => $setup_server_command,
         creates => $data_dir,
@@ -58,7 +58,7 @@ class kegbot::install {
 
     $pip_upgrade = "${::kegbot::install_dir}/bin/pip install --upgrade kegbot"
     $upgrade_kegbot = "echo 'yes' | ${::kegbot::install_dir}/bin/kegbot kb_upgrade"
-    $upgrade_server_command = "${source_env_activate} && ${pip_upgrade} && ${upgrade_kegbot}\""
+    $upgrade_server_command = "bash -c '${source_env_activate} && ${pip_upgrade} && ${upgrade_kegbot}'"
     exec { 'upgrade_server':
         command => $upgrade_server_command,
         require => Exec['setup_server']
