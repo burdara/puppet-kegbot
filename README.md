@@ -39,3 +39,7 @@ Support
 Please log tickets and issues at our [Projects site](http://projects.example.com)
 -->
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/burdara/puppet-kegbot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
