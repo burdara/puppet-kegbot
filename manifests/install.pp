@@ -32,20 +32,11 @@ class kegbot::install {
         ensure => latest,
     }
 
-    # Create server directories
-    file { 'create_install_dir':
-        path   => $::kegbot::install_dir,
-        ensure => directory,
-    }
-
     # === 2 Create virtual environment
     exec { 'create_virtualenv':
         command => "virtualenv ${::kegbot::install_dir}",
         creates => "${::kegbot::install_dir}/bin/activate",
-        require => [
-            File['create_install_dir'],
-            Package['virtualenvwrapper'],
-        ]
+        require => Package['virtualenvwrapper'],
     }
 
     # === 3 Install and setup server
@@ -68,12 +59,4 @@ class kegbot::install {
         creates => $::kegbot::data_dir,
         require => Exec['install_server'],
     }
-
-    #$pip_upgrade = "${::kegbot::install_dir}/bin/pip install --upgrade kegbot"
-    #$upgrade_kegbot = "echo 'yes' | ${::kegbot::install_dir}/bin/kegbot kb_upgrade"
-    #$upgrade_server_command = "bash -c '${source_env_activate} && ${pip_upgrade} && ${upgrade_kegbot}'"
-    #exec { 'upgrade_server':
-    #    command => $upgrade_server_command,
-    #    require => Exec['setup_server'],
-    #}
 }
