@@ -8,6 +8,8 @@
 #
 # === Variables
 #
+# [kegbot::install_dir]
+#   Install directory for server
 # [kegbot::config_dir]
 #   Config directory for server
 # [kegbot::config_file]
@@ -20,11 +22,14 @@
 #
 class kegbot::config {
     file {
+        'create_install_dir':
+            path    => $::kegbot::install_dir,
+            ensure  => directory;
         'create_config_dir':
-            path   => $::kegbot::config_dir,
-            ensure => directory;
+            path    => $::kegbot::config_dir,
+            ensure  => directory;
         'create_config_file':
-            path   => $::kegbot::config_file,
+            path    => $::kegbot::config_file,
             content => template('kegbot/config.gflags.erb');
     }
 
