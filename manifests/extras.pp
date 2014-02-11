@@ -26,15 +26,14 @@ class kegbot::extras (
     $sentry_url            = $::kegbot::params::sentry_url,
     $install_debug_toolbar = $::kegbot::params::install_debug_toolbar,
     $install_statsd        = $::kegbot::params::install_statsd
-    ) {
-
+) {
     if $install_sentry {
-        include sentry
+        include extras::sentry
     }
     if $install_debug_toolbar {
-        include debug_toolbar
+        include extras::debug_toolbar
     }
     if $install_statsd {
-        include statsd
+        include extras::statsd
     }
 }

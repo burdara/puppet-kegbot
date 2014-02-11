@@ -29,17 +29,13 @@ class kegbot::install {
     # === 1 Setup
     # Install package dependencies
     package { $::kegbot::kegbot_packages:
-        ensure => latest
+        ensure => latest,
     }
 
     # Create server directories
-    file { $::kegbot::install_dir:
-        ensure => directory
-    }
-
-    # Remove data directory, if exists
-    file { $::kegbot::data_dir:
-        ensure => absent
+    file { 'create_install_dir'
+        path   => $::kegbot::install_dir,
+        ensure => directory,
     }
 
     # === 2 Create virtual environment
@@ -47,8 +43,8 @@ class kegbot::install {
         command => "virtualenv ${::kegbot::install_dir}",
         creates => "${::kegbot::install_dir}/bin/python",
         require => [
-            File[$::kegbot::install_dir],
-            Package['virtualenvwrapper']
+            File['create_install_dir'],
+            Package['virtualenvwrapper'],
         ]
     }
 
@@ -62,7 +58,7 @@ class kegbot::install {
         command => $install_command,
         creates => "${::kegbot::install_dir}/bin/kegbot",
         timeout => 600,
-        require => Exec['create_virtualenv']
+        require => Exec['create_virtualenv'],
     }
 
     $setup_kegbot = "${::kegbot::install_dir}/bin/setup-kegbot.py --flagfile=${::kegbot::config_file}"
@@ -70,7 +66,7 @@ class kegbot::install {
     exec { 'setup_server':
         command => $setup_server_command,
         creates => $::kegbot::data_dir,
-        require => Exec['install_server']
+        require => Exec['install_server'],
     }
 
     $pip_upgrade = "${::kegbot::install_dir}/bin/pip install --upgrade kegbot"
@@ -78,6 +74,6 @@ class kegbot::install {
     $upgrade_server_command = "bash -c '${source_env_activate} && ${pip_upgrade} && ${upgrade_kegbot}'"
     exec { 'upgrade_server':
         command => $upgrade_server_command,
-        require => Exec['setup_server']
+        require => Exec['setup_server'],
     }
 }
