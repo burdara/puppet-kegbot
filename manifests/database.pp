@@ -25,13 +25,13 @@ class kegbot::database (
     $mysql_pwd       = $::kegbot::params::mysql_pwd,
     $mysql_packages  = $::kegbot::params::mysql_packages,
     $sqlite_packages = $::kegbot::params::sqlite_packages
-    ) {
+) {
     case $::kegbot::database_type {
         mysql: {
-            include mysql
+            include database::mysql
         }
         sqlite: {
-            include sqlite
+            include database::sqlite
         }
         default: {
             fail("Unsupported database_type: ${::kegbot::database_type}. Kegbot currently only supports: sqlite, mysql")
