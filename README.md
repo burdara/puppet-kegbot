@@ -26,17 +26,9 @@ bundle install
 ## Related Projects
 * https://github.com/tylerwalts/vagrant-kegbot
 
-<!--
-License
--------
+## Support
 
-Contact
--------
+Please log tickets and issues at our [Projects site](https://github.com/burdara/puppet-kegbot/issues)
 
-Support
--------
-
-Please log tickets and issues at our [Projects site](http://projects.example.com)
--->
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/burdara/puppet-kegbot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
