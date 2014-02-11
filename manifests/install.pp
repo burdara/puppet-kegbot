@@ -33,7 +33,7 @@ class kegbot::install {
     }
 
     # Create server directories
-    file { 'create_install_dir'
+    file { 'create_install_dir':
         path   => $::kegbot::install_dir,
         ensure => directory,
     }
