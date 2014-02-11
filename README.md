@@ -25,13 +25,6 @@ bundle install
 
 ## Related Projects
 * https://github.com/tylerwalts/vagrant-kegbot
-<<<<<<< HEAD
-
-<!--
-License
--------
-=======
->>>>>>> release/0.1.1
 
 ## Support
 
