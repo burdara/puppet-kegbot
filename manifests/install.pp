@@ -41,7 +41,7 @@ class kegbot::install {
     # === 2 Create virtual environment
     exec { 'create_virtualenv':
         command => "virtualenv ${::kegbot::install_dir}",
-        creates => "${::kegbot::install_dir}/bin/python",
+        creates => "${::kegbot::install_dir}/bin/activate",
         require => [
             File['create_install_dir'],
             Package['virtualenvwrapper'],
