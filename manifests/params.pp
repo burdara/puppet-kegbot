@@ -17,7 +17,7 @@ class kegbot::params {
     $data_dir      = hiera('kegbot::data_dir',      '/opt/kegbot/data')
     $config_dir    = hiera('kegbot::config_dir',    '/etc/kegbot')
     $log_dir       = hiera('kegbot::log_dir',       '/var/log/kegbot')
-    $database_type = hiera('kegbot::database_type', 'sqlite')
+    $database_type = hiera('kegbot::database_type', 'mysql')
     $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
     $bind          = hiera('kegbot::bind',          '0.0.0.0:8000')
     $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")    
@@ -40,7 +40,7 @@ class kegbot::params {
     ]
 
     # kegbot:database
-    $mysql_pwd = hiera('kegbot::mysql_pwd', 'beerMysql123')
+    $db_root_pwd = hiera('kegbot::db_root_pwd', 'beerMysql123')
     $mysql_packages  = [
         'mysql-server'
     ]
