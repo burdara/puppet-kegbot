@@ -31,7 +31,7 @@ class kegbot::database::mysql {
             refreshonly => true;
         'create-kegbot-db':
             command => "mysql -uroot -p${::kegbot::database::mysql_pwd} -e 'create database kegbot;' -sN",
-            onlyif  => "test `mysql -uroot -p${::kegbot::database::mysql_pwd} -e 'show databases;' -sN | grep -c '^kegbot$'` -eq 0";
+            onlyif  => "test \$(mysql -uroot -p${::kegbot::database::mysql_pwd} -e 'show databases;' -sN | grep -c '^kegbot$') -eq 0";
         'create-kegbot-db-user':
             command => "mysql -uroot -p${::kegbot::database::mysql_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to kegbot@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
             unless  => "mysql -ukegbot -p${::kegbot::kegbot_pwd} kegbot -e 'show tables;'";
