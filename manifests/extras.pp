@@ -21,7 +21,7 @@
 #
 # Robbie Burda <github.com/burdara>
 #
-class kegbot::extras (
+class kegbot::extras inherits kegbot (
     $install_sentry        = $::kegbot::params::install_sentry,
     $sentry_url            = $::kegbot::params::sentry_url,
     $install_debug_toolbar = $::kegbot::params::install_debug_toolbar,

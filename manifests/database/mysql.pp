@@ -20,7 +20,7 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::database::mysql {
+class kegbot::database::mysql inherits kegbot::database {
     # Set default exec path for this module
     Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
 
@@ -44,7 +44,7 @@ class kegbot::database::mysql {
             command => "mysql -uroot -p${::kegbot::database::db_root_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to kegbot@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
             unless  => "mysql -ukegbot -p${::kegbot::kegbot_pwd} kegbot -e 'show tables;'";
     }
- 
+
     Service['mysql'] ->
     Exec['set-root-pwd'] ->
     Exec['create-kegbot-db'] ->

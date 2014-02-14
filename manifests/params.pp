@@ -11,7 +11,7 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::params {
+class kegbot::params inherits kegbot {
     $install_src   = hiera('kegbot::install_src',   'package')
     $install_dir   = hiera('kegbot::install_dir',   '/opt/kegbot')
     $data_dir      = hiera('kegbot::data_dir',      '/opt/kegbot/data')
@@ -20,7 +20,7 @@ class kegbot::params {
     $database_type = hiera('kegbot::database_type', 'mysql')
     $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
     $bind          = hiera('kegbot::bind',          '0.0.0.0:8000')
-    $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")    
+    $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")
     $kegbot_packages = [
         'build-essential',
         'git-core',

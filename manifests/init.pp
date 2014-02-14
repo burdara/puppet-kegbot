@@ -41,8 +41,8 @@ class kegbot (
     $kegbot_pwd      = $::kegbot::params::kegbot_pwd,
     $bind            = $::kegbot::params::bind,
     $config_file     = $::kegbot::params::config_file,
-    $kegbot_packages = $::kegbot::params::kegbot_packages,
-) inherits kegbot::params {
+    $kegbot_packages = $::kegbot::params::kegbot_packages
+) {
     include database
     include config
     include install
