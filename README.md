@@ -1,6 +1,8 @@
 puppet-kegbot
 =================
 
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/burdara/puppet-kegbot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 Puppet module for automating the download and installation of Kegbot server.
 
 ## Setup
@@ -28,7 +30,5 @@ bundle install
 
 ## Support
 
-Please log tickets and issues at our [Projects site](https://github.com/burdara/puppet-kegbot/issues)
+Please log tickets and issues on our [Issues Page](https://github.com/burdara/puppet-kegbot/issues)
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/burdara/puppet-kegbot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
