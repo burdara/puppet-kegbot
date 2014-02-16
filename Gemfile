@@ -1,9 +1,16 @@
-source "https://www.rubygems.org"
+source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
-puppetversion = ENV['PUPPET_GEM_VERSION']
-gem 'puppet', puppetversion, :require => false
-gem 'puppet-lint'
-gem 'rspec-puppet'
-gem 'rspec-hiera-puppet'
-gem 'puppetlabs_spec_helper', '>= 0.1.0'
-gem 'coveralls', '>=0.5.0', :require => false
+group :development, :test do
+  gem 'rake',                    :require => false
+  gem 'rspec-puppet',            :require => false
+  gem 'rspec-hiera-puppet'       :require => false
+  gem 'puppetlabs_spec_helper',  :require => false
+  gem 'puppet-lint',             :require => false
+  gem 'travis-lint',             :require => false
+end
+
+if puppetversion = ENV['PUPPET_GEM_VERSION']
+  gem 'puppet', puppetversion, :require => false
+else
+  gem 'puppet', :require => false
+end

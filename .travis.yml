@@ -1,28 +1,30 @@
 ---
+# branches:
+#  only:
+#    - master
+#    - develop
 language: ruby
 bundler_args: --without development
 script:
   - "bundle exec rake lint" 
-  - "bundle exec rake spec SPEC_OPTS='--format documentation'"
-after_success:
-  - git clone -q git://github.com/puppetlabs/ghpublisher.git .forge-release
-  - .forge-release/publish
+  - "bundle exec rake spec SPEC_OPTS='--color --format documentation'"
+# work around RubyGems 2.2.0 breaking ruby 1.8.7
+before_install:
+  - gem update --system 2.1.11
+  - gem --version
 rvm:
+  - 1.8.7
   - 1.9.3
   - 2.0.0
   - ruby-head
 env:
-  - PUPPET_GEM_VERSION="~> 2.7.0"
-  - PUPPET_GEM_VERSION="~> 3.0.0"
-  - PUPPET_GEM_VERSION="~> 3.1.0"
-  - PUPPET_GEM_VERSION="~> 3.2.0"
-  - PUPPET_GEM_VERSION="~> 3.3.0"
+  - PUPPET_GEM_VERSION=">= 3.0.0"
 matrix:
   fast_finish: true
-  exclude:
-    - rvm: 1.9.3
-      env: PUPPET_GEM_VERSION="~> 2.7.0"
-    - rvm: 2.0.0
-      env: PUPPET_GEM_VERSION="~> 2.7.0"
+  allow_failures:
+    - rvm: ruby-head
+  include:
+    - rvm: 1.8.7
+      env: PUPPET_GEM_VERSION="~> 2.7"
 notifications:
   email: false
