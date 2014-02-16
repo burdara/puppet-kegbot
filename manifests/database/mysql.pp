@@ -29,7 +29,7 @@ class kegbot::database::mysql inherits kegbot::database {
         enable     => true,
         hasstatus  => true,
         hasrestart => true,
-        require    -> Package['mysql-server'],
+        require    => Package['mysql-server'],
     }
 
     exec {
