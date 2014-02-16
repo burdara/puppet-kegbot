@@ -21,12 +21,12 @@
 #
 # Robbie Burda <github.com/burdara>
 #
-class kegbot::extras inherits kegbot (
+class kegbot::extras (
     $install_sentry        = $::kegbot::params::install_sentry,
     $sentry_url            = $::kegbot::params::sentry_url,
     $install_debug_toolbar = $::kegbot::params::install_debug_toolbar,
     $install_statsd        = $::kegbot::params::install_statsd
-) {
+) inherits kegbot {
     if $install_sentry {
         include extras::sentry
     }

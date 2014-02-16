@@ -11,7 +11,7 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::params inherits kegbot {
+class kegbot::params {
     $install_src   = hiera('kegbot::install_src',   'package')
     $install_dir   = hiera('kegbot::install_dir',   '/opt/kegbot')
     $data_dir      = hiera('kegbot::data_dir',      '/opt/kegbot/data')
