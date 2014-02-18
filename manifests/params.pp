@@ -17,8 +17,6 @@ class kegbot::params {
     $data_dir      = hiera('kegbot::data_dir',      '/opt/kegbot/data')
     $config_dir    = hiera('kegbot::config_dir',    '/etc/kegbot')
     $log_dir       = hiera('kegbot::log_dir',       '/var/log/kegbot')
-    $database_type = hiera('kegbot::database_type', 'mysql')
-    $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
     $bind          = hiera('kegbot::bind',          '0.0.0.0:8000')
     $config_file   = hiera('kegbot::config_file',   "${config_dir}/config.gflags")
     $kegbot_packages = [
@@ -40,7 +38,12 @@ class kegbot::params {
     ]
 
     # kegbot:database
-    $db_root_pwd = hiera('kegbot::db_root_pwd', 'beerMysql123')
+    $database_type = hiera('kegbot::database_type', 'mysql')
+    $kegbot_usr    = hiera('kegbot::kegbot_usr',    'ketbot')
+    $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
+    
+    $db_root_usr   = hiera('kegbot::db_root_usr',   'root')
+    $db_root_pwd   = hiera('kegbot::db_root_pwd',   'beerMysql123')
     $mysql_packages  = [
         'mysql-server'
     ]
@@ -50,7 +53,7 @@ class kegbot::params {
 
     # kegbot:extras
     $install_sentry        = hiera('kegbot::install_sentry', false)
-    $sentry_url            = hiera('kegbot::sentry_url', 'http://foo:bar@localhost:9000/2')
+    $sentry_url            = hiera('kegbot::sentry_url',     'http://foo:bar@localhost:9000/2')
     $install_debug_toolbar = hiera('kegbot::install_sentry', false)
     $install_statsd        = hiera('kegbot::install_sentry', false)
 }
