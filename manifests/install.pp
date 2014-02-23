@@ -48,7 +48,12 @@ class kegbot::install inherits kegbot {
     # === 3 Install and setup server
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
 
-    if $::kegbot::install_src == "github" or $::kegbot::database_type == "mysql" {
+    if $::kegbot::database_type == 'mysql' {
+        warning('switching to github source for mysql install; current version has basename issue')
+        $::kegbot::install_src = 'github'
+    }
+
+    if $::kegbot::install_src == "github" {
         $git_clone = "bash -c '${source_env_activate} && git clone ${github_repo} ${::kegbot::install_dir}'"
         exec { 'clone_git_repo':
             command => $git_clone,
