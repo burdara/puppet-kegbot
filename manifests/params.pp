@@ -41,7 +41,7 @@ class kegbot::params {
     $database_type = hiera('kegbot::database_type', 'mysql')
     $kegbot_usr    = hiera('kegbot::kegbot_usr',    'ketbot')
     $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
-    
+
     $db_root_usr   = hiera('kegbot::db_root_usr',   'root')
     $db_root_pwd   = hiera('kegbot::db_root_pwd',   'beerMysql123')
     $mysql_packages  = [

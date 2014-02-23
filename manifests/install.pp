@@ -10,12 +10,16 @@
 #
 # [kegbot::kegbot_packages]
 #   Kegbot dependency packages
+# [kegbot::install_src]
+#   Install src package or github
 # [kegbot::install_dir]
 #   Install directory for server
 # [kegbot::config_file]
 #   server setup config gflags file
 # [kegbot::data_dir]
 #   Data directory for server
+# [kegbot::database_type]
+#   backend database type
 #
 # === Authors
 #
@@ -25,6 +29,8 @@
 class kegbot::install inherits kegbot {
     # Set default exec path for this module
     Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
+
+    $github_repo = "https://github.com/Kegbot/kegbot.git"
 
     # === 1 Setup
     # Install package dependencies
@@ -42,14 +48,32 @@ class kegbot::install inherits kegbot {
     # === 3 Install and setup server
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
 
-    $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
-    $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
-    $install_command = "bash -c '${source_env_activate} && ${easy_install} && ${pip_install}'"
-    exec { 'install_server':
-        command => $install_command,
-        creates => "${::kegbot::install_dir}/bin/kegbot",
-        timeout => 600,
-        require => Exec['create_virtualenv'],
+    if $::kegbot::install_src = "github" || $::kegbot::database_type = "mysql" {
+        $git_clone = "bash -c '${source_env_activate} && git clone ${github_repo} ${::kegbot::install_dir}'"
+        exec { 'clone_git_repo':
+            command => $git_clone,
+            creates => "${::kegbot::install_dir}/setup.py",
+            timeout => 600,
+            require => Exec['create_virtualenv'],
+        }
+
+        $repo_setup_command = "bash -c '${source_env_activate} && ${::kegbot::install_dir}/setup.py develop'"
+        exec { 'install_server':
+            command => $repo_setup_command,
+            creates => "${::kegbot::install_dir}/bin/kegbot",
+            timeout => 600,
+            require => Exec['clone_git_repo'],
+        }
+    } else {
+        $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
+        $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
+        $install_command = "bash -c '${source_env_activate} && ${easy_install} && ${pip_install}'"
+        exec { 'install_server':
+            command => $install_command,
+            creates => "${::kegbot::install_dir}/bin/kegbot",
+            timeout => 600,
+            require => Exec['create_virtualenv'],
+        }
     }
 
     $setup_kegbot = "${::kegbot::install_dir}/bin/setup-kegbot.py --flagfile=${::kegbot::config_file}"
