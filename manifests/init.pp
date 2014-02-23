@@ -44,11 +44,17 @@ class kegbot (
     $config_file     = $::kegbot::params::config_file,
     $kegbot_packages = $::kegbot::params::kegbot_packages
 ) inherits kegbot::params {
+
+    exec { 'apt_get_update':
+        command => 'apt-get -y update'
+    }
+
     include database
     include config
     include install
     include server
 
+    Exec['apt_get_update'] ->
     Class['database'] ->
     Class['config'] ->
     Class['install'] ->
