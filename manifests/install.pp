@@ -46,26 +46,24 @@ class kegbot::install inherits kegbot {
     }
 
     # === 3 Install and setup server
+    case $::kegbot::install_src {
+        pip: {
+            if $::kegbot::database_type == 'mysql' {
+                warning("Kegbot server setup may fail on pip kegbot <=0.9.16. If this is the case, use install_src: github")
+            }
+            include install::pip
+            $install_class = 'install::pip'
+        }
+        github: {
+            include install::github
+            $install_class = 'install::github'
+        }
+        default: {
+            fail("Unsupported install_src: ${::kegbot::install_src}. Module currently supports: pip, github")
+        }
+    }
+
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
-
-    if $::kegbot::install_src == 'github' or $::kegbot::database_type == 'mysql' {
-        $git_clone = "git clone ${github_repo} ${::kegbot::install_dir}"
-        $repo_setup = "${::kegbot::install_dir}/setup.py develop"
-        $install_command = "bash -c '${source_env_activate} && ${git_clone} && ${repo_setup}'"
-    } else {
-        $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
-        $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
-        $install_command = "bash -c '${source_env_activate} && ${easy_install} && ${pip_install}'"
-    }
-
-    info("install_server command: ${install_command}")
-    exec { 'install_server':
-        command => $install_command,
-        creates => "${::kegbot::install_dir}/bin/kegbot",
-        timeout => 600,
-        require => Exec['create_virtualenv'],
-    }
-
     $setup_kegbot = "${::kegbot::install_dir}/bin/setup-kegbot.py --flagfile=${::kegbot::config_file}"
     $setup_server_command = "bash -c '${source_env_activate} && ${setup_kegbot}'"
     exec { 'setup_server':
@@ -73,4 +71,9 @@ class kegbot::install inherits kegbot {
         creates => $::kegbot::data_dir,
         require => Exec['install_server'],
     }
+
+    Exec['create_virtualenv'] ->
+    Class[$install_class] ->
+    Exec['setup_server']
+
 }

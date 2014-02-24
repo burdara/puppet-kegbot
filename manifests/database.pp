@@ -37,7 +37,7 @@ class kegbot::database (
             include database::sqlite
         }
         default: {
-            fail("Unsupported database_type: ${::kegbot::database_type}. Kegbot currently only supports: sqlite, mysql")
+            fail("Unsupported database_type: ${::kegbot::database_type}. Module currently supports: sqlite, mysql")
         }
     }
 }
