@@ -51,7 +51,7 @@ class kegbot::install inherits kegbot {
     $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
     $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
     $install_command = "bash -c '${source_env_activate} && ${easy_install} && ${pip_install}'"
-    
+
     if $::kegbot::install_src == 'github' or $::kegbot::database_type == 'mysql' {
         $git_clone = "git clone ${github_repo} ${::kegbot::install_dir}"
         $repo_setup = "${::kegbot::install_dir}/setup.py develop"

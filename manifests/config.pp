@@ -23,10 +23,10 @@
 class kegbot::config inherits kegbot {
     file {
         'create_install_dir':
-            ensure  => directory;
+            ensure  => directory,
             path    => $::kegbot::install_dir;
         'create_config_dir':
-            ensure  => directory;
+            ensure  => directory,
             path    => $::kegbot::config_dir;
         'create_config_file':
             path    => $::kegbot::config_file,
