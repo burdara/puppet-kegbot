@@ -31,26 +31,11 @@ class kegbot::install::github inherits kegbot::install {
         require => Exec['create_virtualenv'],
     }
 
-    $repo_setup = "${::kegbot::install_dir}/repo/setup.py develop"
+    $repo_setup = "${::kegbot::install_dir}/repo/setup.py install"
     $setup_repo_command = "bash -c '${source_env_activate} && ${repo_setup}'"
     exec { 'setup_repo':
         command => $setup_repo_command,
         creates => "${::kegbot::install_dir}/repo/bin/kegbot",
         require => Exec['clone_repo'],
-
-    }
-
-    file { 'create_kegbot_link':
-        ensure  => 'link',
-        path    => "${::kegbot::install_dir}/bin/kegbot",
-        target  => "${::kegbot::install_dir}/repo/bin/kegbot",
-        require => Exec['setup_repo'],
-    }
-
-    file { 'create_kegbot_setup_link':
-        ensure => 'link',
-        path   => "${::kegbot::install_dir}/bin/setup-kegbot.py",
-        target => "${::kegbot::install_dir}/repo/bin/setup-kegbot.py",
-        require => Exec['setup_repo'],
     }
 }
