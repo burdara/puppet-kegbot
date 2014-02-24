@@ -40,8 +40,6 @@ class kegbot::install::github inherits kegbot::install {
 
     }
 
-    file { ''}
-
     file { 'create_kegbot_link':
         ensure  => 'link',
         path    => "${::kegbot::install_dir}/bin/kegbot",
