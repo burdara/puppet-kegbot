@@ -21,10 +21,6 @@
 class kegbot::extras::sentry inherits kegbot::extras (
     $sentry_url = hiera('kegbot::extras::sentry_url', 'http://foo:bar@localhost:9000/2')
 ){
-
-    # Set default exec path for this module
-    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
-
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
     $pip_raven = "${::kegbot::install_dir}/bin/pip install raven"
     $install_command = "bash -c '${source_env_activate} && ${pip_raven}'"

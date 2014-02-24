@@ -16,9 +16,6 @@
 # Robbie Burda <github.com/burdara>
 #
 class kegbot::install::pip inherits kegbot::install {
-    # Set default exec path for this module
-    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
-
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
 
     $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"

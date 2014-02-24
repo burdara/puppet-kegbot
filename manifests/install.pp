@@ -27,11 +27,6 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::install inherits kegbot {
-    # Set default exec path for this module
-    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
-
-    $github_repo = "https://github.com/Kegbot/kegbot.git"
-
     # === 1 Setup
     # Install package dependencies
     package { $::kegbot::kegbot_packages:
@@ -69,7 +64,6 @@ class kegbot::install inherits kegbot {
     exec { 'setup_server':
         command => $setup_server_command,
         creates => $::kegbot::data_dir,
-        require => Exec['install_server'],
     }
 
     Exec['create_virtualenv'] ->

@@ -46,6 +46,9 @@ class kegbot (
     $kegbot_packages = $::kegbot::params::kegbot_packages
 ) inherits kegbot::params {
 
+    File { backup => '.puppet-bak' }
+    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
+
     exec { 'apt_get_update':
         command => 'apt-get -y update'
     }

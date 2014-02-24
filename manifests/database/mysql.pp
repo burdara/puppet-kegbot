@@ -23,9 +23,6 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::database::mysql inherits kegbot::database {
-    # Set default exec path for this module
-    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
-
     service{ 'mysql':
         ensure     => running,
         enable     => true,

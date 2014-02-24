@@ -17,8 +17,6 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::install::github inherits kegbot::install {
-    # Set default exec path for this module
-    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
 
     $github_repo = 'https://github.com/Kegbot/kegbot.git'
 
@@ -42,17 +40,19 @@ class kegbot::install::github inherits kegbot::install {
 
     }
 
+    file { ''}
+
     file { 'create_kegbot_link':
         ensure  => 'link',
-        path    => "${::kegbot::install_dir}/repo/bin/kegbot",
-        target  => "${::kegbot::install_dir}/bin/kegbot",
+        path    => "${::kegbot::install_dir}/bin/kegbot",
+        target  => "${::kegbot::install_dir}/repo/bin/kegbot",
         require => Exec['setup_repo'],
     }
 
     file { 'create_kegbot_setup_link':
         ensure => 'link',
-        path   => "${::kegbot::install_dir}/repo/bin/setup-kegbot.py",
-        target => "${::kegbot::install_dir}/bin/setup-kegbot.py",
+        path   => "${::kegbot::install_dir}/bin/setup-kegbot.py",
+        target => "${::kegbot::install_dir}/repo/bin/setup-kegbot.py",
         require => Exec['setup_repo'],
     }
 }
