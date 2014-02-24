@@ -48,17 +48,17 @@ class kegbot::install inherits kegbot {
     # === 3 Install and setup server
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
 
-    if $::kegbot::install_src == "github" or $::kegbot::database_type == 'mysql' {
+    $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
+    $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
+    $install_command = "bash -c '${source_env_activate} && ${easy_install} && ${pip_install}'"
+    
+    if $::kegbot::install_src == 'github' or $::kegbot::database_type == 'mysql' {
         $git_clone = "git clone ${github_repo} ${::kegbot::install_dir}"
         $repo_setup = "${::kegbot::install_dir}/setup.py develop"
         $install_command = "bash -c '${source_env_activate} && ${git_clone} && ${repo_setup}'"
-    } 
-    else {
-        $easy_install = "${::kegbot::install_dir}/bin/easy_install -U distribute"
-        $pip_install = "${::kegbot::install_dir}/bin/pip install kegbot"
-        $install_command = "bash -c '${source_env_activate} && ${easy_install} && ${pip_install}'"
     }
 
+    info("install_server command: ${install_command}")
     exec { 'install_server':
         command => $install_command,
         creates => "${::kegbot::install_dir}/bin/kegbot",
