@@ -33,7 +33,7 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot (
-    install_src      = $::kegbot::params::install_src,
+    $install_src     = $::kegbot::params::install_src,
     $install_dir     = $::kegbot::params::install_dir,
     $data_dir        = $::kegbot::params::data_dir,
     $config_dir      = $::kegbot::params::config_dir,
