@@ -40,7 +40,7 @@ class kegbot::database::mysql inherits kegbot::database {
             command => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'create database kegbot;' -sN",
             onlyif  => "test \$(mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'show databases;' -sN | grep -c 'kegbot') -eq 0";
         'create_kegbot_db_user':
-            command => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e \"GRANT ALL PRIVILEGES ON kegbot.* to ${::kegbot::kegbot_usr}@localhost IDENTIFIED BY '${::kegbot::kegbot_pwd}';\" -sN",
+            command => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to ${::kegbot::kegbot_usr}@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
             unless  => "mysql --user=${::kegbot::kegbot_usr} --password=${::kegbot::kegbot_pwd} kegbot -e 'show tables;'";
     }
 
