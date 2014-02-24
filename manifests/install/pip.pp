@@ -25,6 +25,5 @@ class kegbot::install::pip inherits kegbot::install {
         command => $install_command,
         creates => "${::kegbot::install_dir}/bin/kegbot",
         timeout => 600,
-        require => Exec['create_virtualenv'],
     }
 }
