@@ -1,7 +1,6 @@
 puppet-kegbot
 =================
 [![Build Status](https://travis-ci.org/burdara/puppet-kegbot.png?branch=feature/bug-fix-mysql-install)](https://travis-ci.org/burdara/puppet-kegbot)
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/burdara/puppet-kegbot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 ## Overview
 
@@ -25,11 +24,11 @@ bundle install
 ```
 
 ## Kegbot reference
-* https://www.kegbot.org/
-* https://www.kickstarter.com/projects/1275337514/kegbot-internet-beer-kegerator
+* [Kegbot.org](https://www.kegbot.org)
+* [Kegbot on Kickstarter](https://www.kickstarter.com/projects/1275337514/kegbot-internet-beer-kegerator)
 
 ## Related Projects
-* https://github.com/tylerwalts/vagrant-kegbot
+* [Vagrant-kegbot](https://github.com/tylerwalts/vagrant-kegbot)
 
 ## Support
 
