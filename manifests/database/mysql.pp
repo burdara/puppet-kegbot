@@ -35,22 +35,21 @@ class kegbot::database::mysql inherits kegbot::database {
         require    => Package['mysql-server'],
     }
 
-    exec { 'set_root_pwd':
-        command     => "mysqladmin --user=${::kegbot::database::db_root_usr} password ${::kegbot::database::db_root_pwd}",
-        subscribe   => Package['mysql-server'],
-        refreshonly => true,
-        require     => Service['mysql'],
+    exec { 
+        'set_root_pwd':
+            command     => "mysqladmin --user=${::kegbot::database::db_root_usr} password ${::kegbot::database::db_root_pwd}",
+            subscribe   => Package['mysql-server'],
+            refreshonly => true;
+        'create_kegbot_db':
+            command => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'create database kegbot;' -sN",
+            onlyif  => "test \$(mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'show databases;' -sN | grep -c 'kegbot') -eq 0";
+        'create_kegbot_db_user':
+            command => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to ${::kegbot::kegbot_usr}@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
+            unless  => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'SHOW GRANTS FOR ${::kegbot::kegbot_usr}@localhost;' -sN";
     }
 
-    exec { 'create_kegbot_db':
-        command => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'create database kegbot;' -sN",
-        onlyif  => "test \$(mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'show databases;' -sN | grep -c 'kegbot') -eq 0",
-        require => Exec['set_root_pwd'],
-    }
-
-    exec { 'create_kegbot_db_user':
-        command => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to ${::kegbot::kegbot_usr}@localhost IDENTIFIED BY \"${::kegbot::kegbot_pwd}\";' -sN",
-        unless  => "mysql --user=${::kegbot::database::db_root_usr} --password=${::kegbot::database::db_root_pwd} -e 'SHOW GRANTS FOR ${::kegbot::kegbot_usr}@localhost;' -sN",
-        require => Exec['create_kegbot_db'],
-    }
+    Service['mysql'] ->
+    Exec['set_root_pwd'] ->
+    Exec['create_kegbot_db'] ->
+    Exec['create_kegbot_db_user']
 }
