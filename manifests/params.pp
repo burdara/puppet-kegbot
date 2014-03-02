@@ -12,7 +12,7 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::params {
-    $install_src   = hiera('kegbot::install_src',   'github')
+    $install_src   = hiera('kegbot::install_src',   'pip')
     $install_dir   = hiera('kegbot::install_dir',   '/opt/kegbot')
     $data_dir      = hiera('kegbot::data_dir',      '/opt/kegbot/data')
     $config_dir    = hiera('kegbot::config_dir',    '/etc/kegbot')
@@ -38,9 +38,10 @@ class kegbot::params {
     ]
 
     # kegbot:database
+    $database_type = hiera('kegbot::database_type', 'sqlite')
     $database_name = hiera('kegbot::database_name', 'kegbot')
-    $database_type = hiera('kegbot::database_type', 'mysql')
-    $kegbot_usr    = hiera('kegbot::kegbot_usr',    'ketbot')
+
+    $kegbot_usr    = hiera('kegbot::kegbot_usr',    'kegbot')
     $kegbot_pwd    = hiera('kegbot::kegbot_pwd',    'beerMe123')
 
     $db_root_usr   = hiera('kegbot::db_root_usr',   'root')
