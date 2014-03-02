@@ -23,6 +23,10 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::database::mysql inherits kegbot::database {
+    package { $::kegbot::database::mysql_packages:
+        ensure => latest
+    }
+
     service{ 'mysql':
         ensure     => running,
         enable     => true,

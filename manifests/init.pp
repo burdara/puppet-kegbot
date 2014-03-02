@@ -38,6 +38,7 @@ class kegbot (
     $data_dir        = $::kegbot::params::data_dir,
     $config_dir      = $::kegbot::params::config_dir,
     $log_dir         = $::kegbot::params::log_dir,
+    $database_name   = $::kegbot::params::database_name,
     $database_type   = $::kegbot::params::database_type,
     $kegbot_usr      = $::kegbot::params::kegbot_usr,
     $kegbot_pwd      = $::kegbot::params::kegbot_pwd,
