@@ -35,7 +35,7 @@ class kegbot::database::mysql inherits kegbot::database {
         require    => Package['mysql-server'],
     }
 
-    exec { 
+    exec {
         'set_root_pwd':
             command     => "mysqladmin --user=${::kegbot::database::db_root_usr} password ${::kegbot::database::db_root_pwd}",
             subscribe   => Package['mysql-server'],
