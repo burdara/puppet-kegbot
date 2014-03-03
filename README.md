@@ -1,6 +1,6 @@
 puppet-kegbot
 =================
-[![Build Status](https://travis-ci.org/burdara/puppet-kegbot.png?branch=feature/bug-fix-mysql-install)](https://travis-ci.org/burdara/puppet-kegbot)
+[![Build Status](https://travis-ci.org/burdara/puppet-kegbot.png?branch=develop)](https://travis-ci.org/burdara/puppet-kegbot)
 
 ## Overview
 
