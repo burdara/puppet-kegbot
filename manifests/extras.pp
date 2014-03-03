@@ -26,7 +26,7 @@ class kegbot::extras (
     $sentry_url            = $::kegbot::params::sentry_url,
     $install_debug_toolbar = $::kegbot::params::install_debug_toolbar,
     $install_statsd        = $::kegbot::params::install_statsd
-) {
+) inherits kegbot {
     if $install_sentry {
         include extras::sentry
     }

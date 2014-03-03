@@ -18,13 +18,9 @@
 #
 # Robbie Burda <github.com/burdara>
 #
-class kegbot::extras::sentry (
-    $sentry_url  = hiera('kegbot::extras::sentry_url', 'http://foo:bar@localhost:9000/2')
-    ){
-
-    # Set default exec path for this module
-    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
-
+class kegbot::extras::sentry inherits kegbot::extras (
+    $sentry_url = hiera('kegbot::extras::sentry_url', 'http://foo:bar@localhost:9000/2')
+){
     $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
     $pip_raven = "${::kegbot::install_dir}/bin/pip install raven"
     $install_command = "bash -c '${source_env_activate} && ${pip_raven}'"
@@ -36,7 +32,7 @@ class kegbot::extras::sentry (
     $tmp_local_settings = "${::kegbot::config_dif}/local_settings.raven.py"
     file { 'local_raven_settings':
         path    => $tmp_local_settings,
-        content => template("kegbot/local_settings.raven.py.erb"),
+        content => template('kegbot/local_settings.raven.py.erb'),
         require => Exec['install_raven']
     }
 
