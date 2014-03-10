@@ -1,7 +1,7 @@
 ---
   classes:
     - "kegbot"
-  kegbot::install_src: "package"
+  kegbot::install_src: "pip"
   kegbot::install_dir: "/opt/kegbot"
   kegbot::data_dir: "/opt/kegbot/data"
   kegbot::config_dir: "/etc/kegbot"
