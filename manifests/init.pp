@@ -64,4 +64,10 @@ class kegbot (
     Class['config'] ->
     Class['install'] ->
     Class['server']
+
+    case $::osfamily {
+        Debian:  {}
+        default: { warn("The Kegbot module is untested on ${osfamily}!  Please feel free to submit an issue or pull request.") }
+    }
+
 }
