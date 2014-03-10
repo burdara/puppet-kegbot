@@ -52,8 +52,8 @@ class kegbot::params {
     ]
 
     # kegbot:extras
-    $install_sentry        = hiera('kegbot::install_sentry', false)
-    $sentry_url            = hiera('kegbot::sentry_url',     'http://foo:bar@localhost:9000/2')
-    $install_debug_toolbar = hiera('kegbot::install_sentry', false)
-    $install_statsd        = hiera('kegbot::install_sentry', false)
+    $install_sentry        = hiera('kegbot::install_sentry',        false)
+    $sentry_url            = hiera('kegbot::sentry_url',            'http://foo:bar@localhost:9000/2')
+    $install_debug_toolbar = hiera('kegbot::install_debug_toolbar', false)
+    $install_statsd        = hiera('kegbot::install_statsd',        false)
 }
