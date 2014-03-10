@@ -1,12 +1,12 @@
 ---
-# branches:
-#  only:
-#    - master
-#    - develop
+branches:
+  only:
+    - master
+    - develop
 language: ruby
 bundler_args: --without development
 script:
-  - "bundle exec rake lint" 
+  - "bundle exec rake lint"
   - "bundle exec rake spec SPEC_OPTS='--color --format documentation'"
 rvm:
   - 1.8.7
