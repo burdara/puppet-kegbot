@@ -1,5 +1,5 @@
 name    'burdara-kegbot'
-version '0.1.1'
+version '1.0.0'
 source 'https://github.com/burdara/puppet-kegbot'
 author 'burdara'
 license 'Apache License, Version 2.0'
