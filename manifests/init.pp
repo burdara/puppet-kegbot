@@ -54,16 +54,16 @@ class kegbot (
         command => 'apt-get -y update'
     }
 
-    include database
-    include config
-    include install
-    include server
+    include kegbot::database
+    include kegbot::config
+    include kegbot::install
+    include kegbot::server
 
     Exec['apt_get_update'] ->
-    Class['database'] ->
-    Class['config'] ->
-    Class['install'] ->
-    Class['server']
+    Class['kegbot::database'] ->
+    Class['kegbot::config'] ->
+    Class['kegbot::install'] ->
+    Class['kegbot::server']
 
     case $::osfamily {
         Debian:  {}

@@ -31,10 +31,10 @@ class kegbot::database (
 ) inherits kegbot {
     case $::kegbot::database_type {
         mysql: {
-            include database::mysql
+            include kegbot::database::mysql
         }
         sqlite: {
-            include database::sqlite
+            include kegbot::database::sqlite
         }
         default: {
             fail("Unsupported database_type: ${::kegbot::database_type}. Module currently supports: sqlite, mysql")

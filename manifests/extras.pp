@@ -28,12 +28,12 @@ class kegbot::extras (
     $install_statsd        = $::kegbot::params::install_statsd
 ) inherits kegbot {
     if $install_sentry {
-        include extras::sentry
+        include kegbot::extras::sentry
     }
     if $install_debug_toolbar {
-        include extras::debug_toolbar
+        include kegbot::extras::debug_toolbar
     }
     if $install_statsd {
-        include extras::statsd
+        include kegbot::extras::statsd
     }
 }

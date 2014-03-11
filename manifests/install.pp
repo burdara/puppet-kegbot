@@ -46,11 +46,11 @@ class kegbot::install inherits kegbot {
             if $::kegbot::database_type == 'mysql' {
                 warning('Kegbot server setup may fail on pip kegbot <=0.9.16. If this is the case, use install_src: github')
             }
-            include install::pip
+            include kegbot::install::pip
             $install_class = 'install::pip'
         }
         github: {
-            include install::github
+            include kegbot::install::github
             $install_class = 'install::github'
         }
         default: {
