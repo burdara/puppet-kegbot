@@ -1,6 +1,6 @@
 puppet-kegbot
 =================
-[![Build Status](https://travis-ci.org/burdara/puppet-kegbot.png?branch=master)](https://travis-ci.org/burdara/puppet-kegbot)
+[![Build Status](https://travis-ci.org/burdara/puppet-kegbot.png?branch=develop)](https://travis-ci.org/burdara/puppet-kegbot)
 
 ## Overview
 
