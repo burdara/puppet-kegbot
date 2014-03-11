@@ -4,7 +4,7 @@ describe 'kegbot', :type => :class do
     context 'When deploying on Ubuntu' do
         let :facts do {
             :operatingsystem => 'Ubuntu',
-            :osfamily        => 'Debian',
+            :osfamily        => 'Debian'
         }
         end
 
@@ -18,17 +18,17 @@ describe 'kegbot', :type => :class do
         end
 
         context 'specifying github install' do
-            let :params do {
-                :install_src => 'github',
-            } end
+            let :params do 
+                { :install_src => 'github' } 
+            end
             it { should contain_class('kegbot::install::github') }
             it { should_not contain_class('kegbot::install::pip') }
         end
 
         context 'specifying mysql database' do
-            let :params do {
-                :database_type => 'mysql',
-            } end
+            let :params do 
+                { :database_type => 'mysql' } 
+            end
             it { should contain_class('kegbot::database::mysql') }
             it { should contain_service('mysql') }
             it { should_not contain_class('kegbot::database::sqlite') }
@@ -60,40 +60,46 @@ describe 'kegbot', :type => :class do
             it { should contain_package('python-sqlite') }
             it { should contain_file('create_install_dir').with(
                 'ensure' => 'directory',
-                'path'   => '/opt/kegbot',
+                'path'   => '/opt/kegbot'
             ) }
             it { should contain_file('create_config_dir').with(
                 'ensure' => 'directory',
-                'path'   => '/etc/kegbot',
+                'path'   => '/etc/kegbot'
             ) }
             it { should contain_file('create_log_dir').with(
                 'ensure' => 'directory',
-                'path'   => '/var/log/kegbot',
+                'path'   => '/var/log/kegbot'
             ) }
-            it { should contain_file("create_config_file")
-                .with('path' => '/etc/kegbot/config.gflags')
-                .with_content(%r{^--data_root=/opt/kegbot/data$})
-                .with_content(%r{^--db_type=sqlite$})
-                .with_content(%r{^--db_database=kegbot$})
-                .with_content(%r{^--db_user=kegbot$})
-                .with_content(%r{^--db_password=beerMe123$})
-                .with_content(%r{^--settings_dir=/etc/kegbot$})
-            }
+            it { should contain_file("create_config_file").with(
+                    'path' => '/etc/kegbot/config.gflags'
+                ).with_content(
+                    %r{^--data_root=/opt/kegbot/data$}
+                ).with_content(
+                    %r{^--db_type=sqlite$}
+                ).with_content(
+                    %r{^--db_database=kegbot$}
+                ).with_content(
+                    %r{^--db_user=kegbot$}
+                ).with_content(
+                    %r{^--db_password=beerMe123$}
+                ).with_content(
+                    %r{^--settings_dir=/etc/kegbot$}
+            ) }
             it { should contain_class('kegbot::install::pip') }
             it { should_not contain_class('kegbot::install::github') }
         end
 
         context 'specifying unsupported install_src' do
-            let :params do {
-                :install_src => 'cloud',
-            } end
+            let :params do 
+                { :install_src => 'cloud' } 
+            end
             it { expect { should raise_error(Puppet::Error) }}
         end
 
         context 'specifying unsupported database' do
-            let :params do {
-                :database_type => 'sql_server',
-            } end
+            let :params do 
+                { :database_type => 'sql_server' } 
+            end
             it { expect { should raise_error(Puppet::Error) }}
         end
         it { should contain_exec('start_server') }
@@ -102,7 +108,7 @@ describe 'kegbot', :type => :class do
     context 'When deploying on unsupported OS' do
         let :facts do {
             :operatingsystem => 'CentOS',
-            :osfamily        => 'RedHat',
+            :osfamily        => 'RedHat'
         } end
         it { expect { should raise_warn(Puppet::Warn) }}
     end
