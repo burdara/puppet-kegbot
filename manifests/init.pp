@@ -33,23 +33,41 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot (
+    $install_src     = $::kegbot::params::install_src,
     $install_dir     = $::kegbot::params::install_dir,
     $data_dir        = $::kegbot::params::data_dir,
     $config_dir      = $::kegbot::params::config_dir,
     $log_dir         = $::kegbot::params::log_dir,
+    $database_name   = $::kegbot::params::database_name,
     $database_type   = $::kegbot::params::database_type,
+    $kegbot_usr      = $::kegbot::params::kegbot_usr,
     $kegbot_pwd      = $::kegbot::params::kegbot_pwd,
     $bind            = $::kegbot::params::bind,
     $config_file     = $::kegbot::params::config_file,
-    $kegbot_packages = $::kegbot::params::kegbot_packages,
+    $kegbot_packages = $::kegbot::params::kegbot_packages
 ) inherits kegbot::params {
-    include database
-    include config
-    include install
-    include server
 
-    Class['database'] ->
-    Class['config'] ->
-    Class['install'] ->
-    Class['server']
+    File { backup => '.puppet-bak' }
+    Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
+
+    exec { 'apt_get_update':
+        command => 'apt-get -y update'
+    }
+
+    include kegbot::database
+    include kegbot::config
+    include kegbot::install
+    include kegbot::server
+
+    Exec['apt_get_update'] ->
+    Class['kegbot::database'] ->
+    Class['kegbot::config'] ->
+    Class['kegbot::install'] ->
+    Class['kegbot::server']
+
+    case $::osfamily {
+        Debian:  {}
+        default: { warn("The Kegbot module is untested on ${osfamily}!  Please feel free to submit an issue or pull request.") }
+    }
+
 }

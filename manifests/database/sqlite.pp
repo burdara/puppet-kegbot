@@ -16,7 +16,7 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::database::sqlite {
+class kegbot::database::sqlite inherits kegbot::database {
     package { $::kegbot::database::sqlite_packages:
         ensure => latest
     }

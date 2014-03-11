@@ -1,0 +1,20 @@
+---
+  classes:
+    - "kegbot"
+  kegbot::install_src: "pip"
+  kegbot::install_dir: "/opt/kegbot"
+  kegbot::data_dir: "/opt/kegbot/data"
+  kegbot::config_dir: "/etc/kegbot"
+  kegbot::log_dir: "/var/log/kegbot"
+  kegbot::bind: "0.0.0.0:8000"
+  kegbot::config_file: "/etc/kegbot/config.gflags"
+  kegbot::database_type: "sqlite"
+  kegbot::database_name: "kegbot"
+  kegbot::kegbot_usr: "kegbot"
+  kegbot::kegbot_pwd: "beerMe123"
+  kegbot::db_root_usr: "root"
+  kegbot::db_root_pwd: "beerMysql123"
+  kegbot::install_sentry: off
+  kegbot::sentry_url: "http://foo:bar@localhost:9000/2"
+  kegbot::install_debug_toolbar: off
+  kegbot::install_statsd: off

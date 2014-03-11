@@ -20,14 +20,14 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::config {
+class kegbot::config inherits kegbot {
     file {
         'create_install_dir':
-            path    => $::kegbot::install_dir,
-            ensure  => directory;
+            ensure  => directory,
+            path    => $::kegbot::install_dir;
         'create_config_dir':
-            path    => $::kegbot::config_dir,
-            ensure  => directory;
+            ensure  => directory,
+            path    => $::kegbot::config_dir;
         'create_config_file':
             path    => $::kegbot::config_file,
             content => template('kegbot/config.gflags.erb');
