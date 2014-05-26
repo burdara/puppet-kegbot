@@ -4,8 +4,6 @@
 #
 # === Parameters
 #
-# None
-#
 # === Variables
 #
 # [kegbot::kegbot_packages]
@@ -19,55 +17,51 @@
 # [kegbot::data_dir]
 #   Data directory for server
 # [kegbot::database_type]
-#   backend database type
+#   Backend database type
 #
 # === Authors
 #
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::install inherits kegbot {
-    # === 1 Setup
-    # Install package dependencies
-    package { $::kegbot::kegbot_packages:
-        ensure => latest,
+class kegbot::install {
+  contain kegbot
+
+  package { $::kegbot::kegbot_packages:
+    ensure => latest,
+  } ->
+  exec { 'install_virtualenv':
+    command => 'pip install virtualenv',
+  } ->
+  exec { 'create_virtualenv':
+    command => "virtualenv ${::kegbot::install_dir}",
+    creates => "${::kegbot::install_dir}/bin/activate",
+  }
+
+  # === 3 Install and setup server
+  case $::kegbot::install_src {
+    pip: {
+      contain kegbot::install::pip
+      $install_class = 'install::pip'
     }
-
-    # === 2 Create virtual environment
-    exec { 'create_virtualenv':
-        command => "virtualenv ${::kegbot::install_dir}",
-        creates => "${::kegbot::install_dir}/bin/activate",
-        require => Package['virtualenvwrapper'],
+    github: {
+      contain kegbot::install::github
+      $install_class = 'install::github'
     }
-
-    # === 3 Install and setup server
-    case $::kegbot::install_src {
-        pip: {
-            if $::kegbot::database_type == 'mysql' {
-                warning('Kegbot server setup may fail on pip kegbot <=0.9.16. If this is the case, use install_src: github')
-            }
-            include kegbot::install::pip
-            $install_class = 'install::pip'
-        }
-        github: {
-            include kegbot::install::github
-            $install_class = 'install::github'
-        }
-        default: {
-            fail("Unsupported install_src: ${::kegbot::install_src}. Module currently supports: pip, github")
-        }
+    default: {
+      fail("Unsupported install_src: ${::kegbot::install_src}. Module currently supports: pip, github")
     }
+  }
 
-    $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
-    $setup_kegbot = "${::kegbot::install_dir}/bin/setup-kegbot.py --flagfile=${::kegbot::config_file}"
-    $setup_server_command = "bash -c '${source_env_activate} && ${setup_kegbot}'"
-    exec { 'setup_server':
-        command => $setup_server_command,
-        creates => $::kegbot::data_dir,
-    }
+  $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
+  $setup_kegbot = "${::kegbot::install_dir}/bin/setup-kegbot.py --flagfile=${::kegbot::config_file}"
+  $setup_server_command = "bash -c '${source_env_activate} && ${setup_kegbot}'"
+  exec { 'setup_server':
+    command => $setup_server_command,
+    creates => $::kegbot::data_dir,
+  }
 
-    Exec['create_virtualenv'] ->
-    Class[$install_class] ->
-    Exec['setup_server']
-
+  Exec['create_virtualenv'] ->
+  Class[$install_class] ->
+  Exec['setup_server']
 }

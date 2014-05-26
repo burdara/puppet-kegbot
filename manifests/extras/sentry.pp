@@ -4,8 +4,8 @@
 #
 # === Parameters
 #
-# [kegbot::extras::sentry_url]
-#   sentry url from sentry dashboard
+# [sentry_url]
+#   sentry url
 #
 # === Variables
 #
@@ -18,27 +18,27 @@
 #
 # Robbie Burda <github.com/burdara>
 #
-class kegbot::extras::sentry inherits kegbot::extras (
-    $sentry_url = hiera('kegbot::extras::sentry_url', 'http://foo:bar@localhost:9000/2')
-){
-    $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
-    $pip_raven = "${::kegbot::install_dir}/bin/pip install raven"
-    $install_command = "bash -c '${source_env_activate} && ${pip_raven}'"
-    exec { 'install_raven':
-        command => $install_command,
-        timeout => 600
-    }
+class kegbot::extra::sentry (
+  $sentry_url = $::kegbot::params::extra_sentry_url
+) {
+  $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
+  $pip_raven = "${::kegbot::install_dir}/bin/pip install raven"
+  $install_command = "bash -c '${source_env_activate} && ${pip_raven}'"
+  exec { 'install_raven':
+    command => $install_command,
+    timeout => 600
+  }
 
-    $tmp_local_settings = "${::kegbot::config_dif}/local_settings.raven.py"
-    file { 'local_raven_settings':
-        path    => $tmp_local_settings,
-        content => template('kegbot/local_settings.raven.py.erb'),
-        require => Exec['install_raven']
-    }
+  $tmp_local_settings = "${::kegbot::config_dif}/local_settings.raven.py"
+  file { 'local_raven_settings':
+    path    => $tmp_local_settings,
+    content => template('kegbot/extra/local_settings.raven.py.erb'),
+    require => Exec['install_raven']
+  }
 
-    $local_settings = "${::kegbot::config_dif}/local_settings.py"
-    exec { 'append_raven_settings'
-        command => "/bin/cat ${tmp_local_settings} >> ${local_settings}",
-        require => Exec['local_raven_settings']
-    }
+  $local_settings = "${::kegbot::config_dif}/local_settings.py"
+  exec { 'append_raven_settings'
+    command => "/bin/cat ${tmp_local_settings} >> ${local_settings}",
+    require => Exec['local_raven_settings']
+  }
 }

@@ -4,8 +4,6 @@
 #
 # === Parameters
 #
-# None
-#
 # === Variables
 #
 # [kegbot::install_dir]
@@ -20,27 +18,27 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::server inherits kegbot {
-    $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
-    # start server
-    $run_server = "${::kegbot::install_dir}/bin/kegbot runserver ${::kegbot::bind} &> ${::kegbot::log_dir}/server.log &"
-    $start_server_command = "bash -c '${source_env_activate} && ${run_server}'"
-    # start celeryd
-    $start_celeryd_command = "bash -c '${source_env_activate} && ${::kegbot::install_dir}/bin/kegbot celeryd_detach -E'"
+class kegbot::server {
+  contain kegbot
 
-    file { 'create_log_dir':
-        ensure => directory,
-        path   => $::kegbot::log_dir,
-    }
+  $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
+  $run_server = "${::kegbot::install_dir}/bin/kegbot runserver ${::kegbot::bind} &> ${::kegbot::log_dir}/server.log &"
+  $start_server_command = "bash -c '${source_env_activate} && ${run_server}'"
+  $start_run_workers_command = "bash -c '${source_env_activate} && ${::kegbot::install_dir}/bin/kegbot run_workers &> ${::kegbot::log_dir}/workers.log &'"
 
-    exec {
-        'start_server':
-            command => $start_server_command;
-        'start_celeryd':
-            command => $start_celeryd_command;
-    }
+  file { 'create_log_dir':
+    ensure => directory,
+    path   => $::kegbot::log_dir,
+  }
 
-    File['create_log_dir'] ->
-    Exec['start_server'] ->
-    Exec['start_celeryd']
+  exec {
+    'start_server':
+      command => $start_server_command;
+    'start_workers':
+      command => $start_run_workers_command;
+  }
+
+  File['create_log_dir'] ->
+  Exec['start_server'] ->
+  Exec['start_workers']
 }
