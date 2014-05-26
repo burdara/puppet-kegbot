@@ -44,10 +44,13 @@ class kegbot::database::mysql {
     'create_kegbot_db_user':
       command => "mysql --user=${db_root_usr} --password=${db_root_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to ${kegbot_usr}@localhost IDENTIFIED BY \"${kegbot_pwd}\";' -sN",
       unless  => "mysql --user=${db_root_usr} --password=${db_root_pwd} -e 'SHOW GRANTS FOR ${kegbot_usr}@localhost;' -sN";
+    'update_mysql_timezone_tables':
+      command => "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=${db_root_usr} --password=${db_root_pwd} mysql";
   }
 
   Service['mysql'] ->
   Exec['set_root_pwd'] ->
   Exec['create_kegbot_db'] ->
-  Exec['create_kegbot_db_user']
+  Exec['create_kegbot_db_user'] ->
+  Exec['update_mysql_timezone_tables']
 }

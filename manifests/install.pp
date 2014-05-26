@@ -38,14 +38,13 @@ class kegbot::install {
     creates => "${::kegbot::install_dir}/bin/activate",
   }
 
-  # === 3 Install and setup server
   case $::kegbot::install_src {
     pip: {
-      contain kegbot::install::pip
+      include kegbot::install::pip
       $install_class = 'install::pip'
     }
     github: {
-      contain kegbot::install::github
+      include kegbot::install::github
       $install_class = 'install::github'
     }
     default: {
