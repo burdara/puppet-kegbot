@@ -23,8 +23,9 @@ class kegbot::server {
 
   $source_env_activate = "source ${::kegbot::install_dir}/bin/activate"
   $run_server = "${::kegbot::install_dir}/bin/kegbot runserver ${::kegbot::bind} &> ${::kegbot::log_dir}/server.log &"
+  $run_workers = "${::kegbot::install_dir}/bin/kegbot run_workers &> ${::kegbot::log_dir}/workers.log &"
   $start_server_command = "bash -c '${source_env_activate} && ${run_server}'"
-  $start_run_workers_command = "bash -c '${source_env_activate} && ${::kegbot::install_dir}/bin/kegbot run_workers &> ${::kegbot::log_dir}/workers.log &'"
+  $start_run_workers_command = "bash -c '${source_env_activate} && ${run_workers}'"
 
   file { 'create_log_dir':
     ensure => directory,

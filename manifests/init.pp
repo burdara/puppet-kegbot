@@ -49,7 +49,7 @@ class kegbot (
   $kegbot_packages = $::kegbot::params::kegbot_packages,
   $debug_mode      = $::kegbot::params::debug_mode,
   $db_root_usr     = $::kegbot::params::db_root_usr,
-  $db_root_pwd     = $::kegbot::params::db_root_pwd,
+  $db_root_pwd     = $::kegbot::params::db_root_pwd
 ) inherits ::kegbot::params {
   validate_bool($debug_mode)
 
