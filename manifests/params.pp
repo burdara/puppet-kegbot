@@ -19,7 +19,7 @@ class kegbot::params {
   $log_dir         = hiera('kegbot::log_dir',     '/var/log/kegbot')
   $bind            = hiera('kegbot::bind',        '0.0.0.0:8000')
   $config_file     = hiera('kegbot::config_file', "${config_dir}/config.gflags")
-  $debug_mode      = hiera('kegbot::debug_mode',  true)
+  $debug_mode      = hiera('kegbot::debug_mode',  'true')
   $kegbot_packages = [
     'python-dev',
     'python-pip',
