@@ -14,12 +14,10 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::database (
-  database_type = $title
-){
+class kegbot::database {
   contain kegbot
 
-  case $database_type {
+  case $::kegbot::database_type {
     mysql: {
       contain kegbot::database::mysql
     }
