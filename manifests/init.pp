@@ -4,28 +4,12 @@
 #
 # === Parameters
 #
-# [install_src]
-#   server installation source
-# [install_dir]
-#   server installation directory
-# [data_dir]
-#   server data directory
-# [config_dir]
-#   server config directory
-# [log_dir]
-#   server log directory
-# [database_type]
-#   server database type. Supports sqlite and mysql currently
-# [kegbot_pwd]
-#   server password
-# [bind]
-#   binding IP address: 0.0.0.0:8000
-# [config_file]
-#   server setup config gFlags file
-# [debug_mode]
-#   turn debug mode on and off
-# [kegbot_packages]
-#   server package dependencies
+# [*base_path*]
+#   base directory for server instances
+# [*user*]
+#   primary server user
+# [*group*]
+#   primary server group
 #
 # === Variables
 #
@@ -35,44 +19,67 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot (
-  $install_src     = $::kegbot::params::install_src,
-  $install_dir     = $::kegbot::params::install_dir,
-  $data_dir        = $::kegbot::params::data_dir,
-  $config_dir      = $::kegbot::params::config_dir,
-  $log_dir         = $::kegbot::params::log_dir,
-  $database_name   = $::kegbot::params::database_name,
-  $database_type   = $::kegbot::params::database_type,
-  $kegbot_usr      = $::kegbot::params::kegbot_usr,
-  $kegbot_pwd      = $::kegbot::params::kegbot_pwd,
-  $bind            = $::kegbot::params::bind,
-  $config_file     = $::kegbot::params::config_file,
-  $debug_mode      = $::kegbot::params::debug_mode,
-  $db_root_usr     = $::kegbot::params::db_root_usr,
-  $db_root_pwd     = $::kegbot::params::db_root_pwd,
-  $kegbot_packages = $::kegbot::params::kegbot_packages
+  $base_path                = $::kegbot::params::default_base_path,
+  $user                     = $::kegbot::params::default_kegbot_user,
+  $group                    = $::kegbot::params::default_kegbot_group,
+  $database_root_user       = $::kegbot::params::default_database_root_user,
+  $database_root_password   = $::kegbot::params::default_database_root_password,
 ) inherits ::kegbot::params {
-  validate_bool($debug_mode)
-
   File { backup => '.puppet-bak' }
-  Exec { path => ['/usr/bin', '/usr/sbin', '/bin'] }
+  Exec { path => ['/usr/local/bin', '/usr/bin', '/usr/sbin', '/bin'] }
 
-  exec { 'apt_get_update':
-    command => 'apt-get -y update'
+  $packages = [
+    'python-dev',
+    'python-pip',
+    'libjpeg-dev',
+    'libmysqlclient-dev',
+    'redis-server',
+    'mysql-client',
+    'mysql-server',
+    'supervisor',
+    'nginx'
+  ]
+
+  ensure_resource("group", $group, { ensure => present })
+  ensure_resource("user", $user, { ensure => present })
+  file { $base_path:
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0755',
   }
 
-  include kegbot::database
-  include kegbot::config
-  include kegbot::install
-  include kegbot::server
-
-  Exec['apt_get_update'] ->
-  Class['kegbot::database'] ->
-  Class['kegbot::config'] ->
-  Class['kegbot::install'] ->
-  Class['kegbot::server']
-
+  # Update and install packages
   case $::osfamily {
-    Debian:  {}
+    Debian: { exec { 'package_update': command => 'apt-get -y update' } }
+    RedHat: { exec { 'package_update': command => 'yum -y update' } }
     default: { warn("The Kegbot module is untested on ${osfamily}!  Please feel free to submit an issue or pull request.") }
+  } ->
+  package { $packages: ensure => latest }
+
+  exec { 'install_virtualenv':
+    command     => 'pip install virtualenv',
+    refreshonly => true,
+    subscribe   => [
+      Package['python-dev'],
+      Package['python-pip'],
+    ]
+  }
+
+  # Initialize MySQL database
+  service{ 'mysql':
+    ensure     => running,
+    enable     => true,
+    hasstatus  => true,
+    hasrestart => true,
+    subscribe  => Package['mysql-server'],
+  } ->
+  exec { 'set_root_password':
+    command     => "mysqladmin --user=${database_root_user} password ${database_root_password}",
+    user        => $user,
+    group       => $group,
+    refreshonly => true,
+    subscribe   => Package['mysql-server'],
+    require     => [ User[$user], Group[$group] ]
   }
 }

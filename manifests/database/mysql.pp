@@ -1,4 +1,4 @@
-# == Class: kegbot::database::mysql
+# == Define Type: kegbot::database::mysql
 #
 # Installs mysql database
 #
@@ -22,34 +22,30 @@
 # Robbie Burda <github.com/burdara>
 # Tyler Walters <github.com/tylerwalts>
 #
-class kegbot::database::mysql {
-  contain kegbot
-
-  service{ 'mysql':
-    ensure     => running,
-    enable     => true,
-    hasstatus  => true,
-    hasrestart => true,
-    require    => Package['mysql-server'],
-  }
-
+define kegbot::database::mysql (
+  $database_name            = $::kegbot::params::default_database_name,
+  $database_root_user       = $::kegbot::params::default_database_root_user,
+  $database_root_password   = $::kegbot::params::default_database_root_password,
+  $database_kegbot_user     = $::kegbot::params::default_database_kegbot_user,
+  $database_kegbot_password = $::kegbot::params::default_database_kegbot_password,
+){
   exec {
-    'set_root_pwd':
-      command     => "mysqladmin --user=${db_root_usr} password ${db_root_pwd}",
-      subscribe   => Package['mysql-server'],
-      refreshonly => true;
     'create_kegbot_db':
-      command => "mysql --user=${db_root_usr} --password=${db_root_pwd} -e 'create database kegbot;' -sN",
-      onlyif  => "test \$(mysql --user=${db_root_usr} --password=${db_root_pwd} -e 'show databases;' -sN | grep -c '${database_name}') -eq 0";
+      command => "mysql --user=${database_root_user} --password=${database_root_password} -e 'create database ${database_name};' -sN",
+      onlyif  => "test \$(mysql --user=${database_root_user} --password=${database_root_password} -e 'show databases;' -sN | grep -c '${database_name}') -eq 0",
+      user    => $::kegbot::user,
+      group   => $::kegbot::group;
     'create_kegbot_db_user':
-      command => "mysql --user=${db_root_usr} --password=${db_root_pwd} -e 'GRANT ALL PRIVILEGES ON kegbot.* to ${kegbot_usr}@localhost IDENTIFIED BY \"${kegbot_pwd}\";' -sN",
-      unless  => "mysql --user=${db_root_usr} --password=${db_root_pwd} -e 'SHOW GRANTS FOR ${kegbot_usr}@localhost;' -sN";
+      command => "mysql --user=${database_root_user} --password=${database_root_password} -e 'GRANT ALL PRIVILEGES ON kegbot.* to ${database_kegbot_user}@localhost IDENTIFIED BY \"${database_kegbot_password}\";' -sN",
+      unless  => "mysql --user=${database_root_user} --password=${database_root_password} -e 'SHOW GRANTS FOR ${database_kegbot_user}@localhost;' -sN",
+      user    => $::kegbot::user,
+      group   => $::kegbot::group;
     'update_mysql_timezone_tables':
-      command => "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=${db_root_usr} --password=${db_root_pwd} mysql";
+      command => "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --user=${database_root_user} --password=${database_root_password} mysql",
+      user    => $::kegbot::user,
+      group   => $::kegbot::group;
   }
 
-  Service['mysql'] ->
-  Exec['set_root_pwd'] ->
   Exec['create_kegbot_db'] ->
   Exec['create_kegbot_db_user'] ->
   Exec['update_mysql_timezone_tables']
