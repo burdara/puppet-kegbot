@@ -47,7 +47,7 @@ define kegbot::instance (
   $database_kegbot_user     = $::kegbot::params::default_database_kegbot_user,
   $database_kegbot_password = $::kegbot::params::default_database_kegbot_password,
 ) {
-  contain kegbot
+  contain ::kegbot
 
   $path = "${::kegbot::base_path}/${name}"
   $data_path = "${::kegbot::base_path}/${name}/data"
@@ -65,7 +65,8 @@ define kegbot::instance (
     ensure => directory,
     owner  => $user,
     group  => $group,
-  } ->
+  }
+
   exec { 'create_virtualenv':
     command => "virtualenv ${path}",
     creates => "${path}/bin/activate",

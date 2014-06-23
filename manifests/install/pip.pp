@@ -17,9 +17,9 @@
 #
 # Robbie Burda <github.com/burdara>
 #
-define kegbot::install::pip {
-  contain kegbot::instance
-
+class kegbot::install::pip (
+  $install_path
+){
   $source_env_activate = "source ${::kegbot::instance::path}/bin/activate"
   $pip_install = "${::kegbot::instance::path}/bin/pip install -U kegbot"
   $install_command = "bash -c '${source_env_activate} && ${pip_install}'"
