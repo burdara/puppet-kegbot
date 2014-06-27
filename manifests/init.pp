@@ -24,6 +24,8 @@ class kegbot (
   $group                    = $::kegbot::params::default_kegbot_group,
   $database_root_user       = $::kegbot::params::default_database_root_user,
   $database_root_password   = $::kegbot::params::default_database_root_password,
+  $alt_data_base_path       = undef,
+  $environment              = $::kegbot::params::default_environment,
 ) inherits ::kegbot::params {
   File { backup => '.puppet-bak' }
   Exec { path => ['/usr/local/bin', '/usr/bin', '/usr/sbin', '/bin'] }
@@ -41,8 +43,22 @@ class kegbot (
   ]
 
   ensure_resource("group", $group, { ensure => present })
-  ensure_resource("user", $user, { ensure => present })
-  file { $base_path:
+  $groups = ['users']
+  if $user != $group { $groups += [$group] }
+  ensure_resource("user", $user, {
+    ensure     => present,
+    shell      => '/bin/bash',
+    managehome => true,
+    groups     => $groups,
+  })
+  $create_file_list = [$base_path]
+  if $alt_data_base_path and $ald_data_base_path != $base_path {
+    $data_base_path = $alt_data_base_path
+    $create_file_list += [$data_base_path]
+  } else {
+    $data_base_path = $base_path
+  }
+  file { $create_file_list:
     ensure => directory,
     owner  => $user,
     group  => $group,
@@ -80,6 +96,5 @@ class kegbot (
     group       => $group,
     refreshonly => true,
     subscribe   => Package['mysql-server'],
-    require     => [ User[$user], Group[$group] ]
   }
 }

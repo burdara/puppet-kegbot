@@ -4,10 +4,14 @@
 #
 # === Parameters
 #
-# === Variables
-#
-# [kegbot::install_dir]
+# [*path*]
 #   Install directory for server
+# [*user*]
+#   application user
+# [*group*]
+#   application user group
+#
+# === Variables
 #
 # === Authors
 #
@@ -15,20 +19,20 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 class kegbot::install::github (
-  $install_directory = $::kegbot::instance::path,
-  $user              = $::kegbot::user,
-  $group             = $::kegbot::group,
+  $path  = undef,
+  $user  = $::kegbot::params::default_kegbot_user,
+  $group = $::kegbot::params::default_kegbot_group,
 ){
-  ensure_resource('file', $install_directory, {
+  ensure_resource('file', $path, {
     ensure => directory,
     owner  => $user,
     group  => $group,
   })
   ensure_package('git', { ensure => latest })
 
-  $repo_dir = "${install_directory}/repo"
+  $repo_dir = "${path}/repo"
   $github_repo = 'https://github.com/Kegbot/kegbot-server.git'
-  $source_env_activate = "source ${install_directory}/bin/activate"
+  $source_env_activate = "source ${path}/bin/activate"
 
   $git_clone = "git clone ${github_repo} ${repo_dir}"
   $clone_repo_command = "bash -c '${source_env_activate} && ${git_clone}'"
@@ -39,13 +43,13 @@ class kegbot::install::github (
   exec {
     'clone_repo':
       command => $clone_repo_command,
-      creates => "${install_directory}/repo/setup.py",
+      creates => "${path}/repo/setup.py",
       timeout => 600,
       user    => $user,
       group   => $group;
     'setup_repo':
       command => $setup_repo_command,
-      creates => "${install_directory}/bin/kegbot",
+      creates => "${path}/bin/kegbot",
       user    => $user,
       group   => $group;
   }

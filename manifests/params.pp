@@ -27,4 +27,7 @@ class kegbot::params {
   $default_database_root_password   = hiera('kegbot::instance::database_root_password',   'beerMysql123')
   $default_database_kegbot_user     = hiera('kegbot::instance::database_kegbot_user',     'kegbot')
   $default_database_kegbot_password = hiera('kegbot::instance::database_kegbot_password', 'beerMe123')
+
+  $default_environment = hiera('kegbot::environment', 'prod')
+
 }
