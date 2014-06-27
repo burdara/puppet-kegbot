@@ -35,7 +35,7 @@
 # Tyler Walters <github.com/tylerwalts>
 #
 define kegbot::instance (
-  $name                     = $title,
+  $instance_name            = $title,
   $install_source           = $::kegbot::params::default_install_source,
   $server_port              = $::kegbot::params::default_server_port,
   $debug_mode               = $::kegbot::params::default_debug_mode,
@@ -46,16 +46,17 @@ define kegbot::instance (
   $database_root_password   = $::kegbot::params::default_database_root_password,
   $database_kegbot_user     = $::kegbot::params::default_database_kegbot_user,
   $database_kegbot_password = $::kegbot::params::default_database_kegbot_password,
+  $start_server             = $::kegbot::params::default_start_server_instance,
 ) {
   # The base class must be included first because it is used by parameter defaults
   if ! defined(Class['kegbot']) {
     fail('You must include the kegbot base class before using any kegbot defined resources')
   }
 
-  $path = "${::kegbot::base_path}/${name}"
-  $config_path = "${::kegbot::base_path}/${name}/config"
-  $log_path = "${::kegbot::base_path}/${name}/log"
-  $data_path = "${::kegbot::data_base_path}/${name}/data"
+  $path = "${::kegbot::base_path}/${instance_name}"
+  $config_path = "${::kegbot::base_path}/${instance_name}/config"
+  $log_path = "${::kegbot::base_path}/${instance_name}/log"
+  $data_path = "${::kegbot::data_base_path}/${instance_name}/data"
   $create_file_list = [$path, $config_path, $log_path]
 
   $config_file = "${config_path}/config.gflags"
@@ -66,10 +67,16 @@ define kegbot::instance (
   $config_db_password = "--db_password=${database_kegbot_password}"
   $config_settings_dir = "--settings_dir=${config_path}"
 
+  if $::kegbot::environment == 'prod' {
+    $run_server_command = 'run_gunicorn --debug --bind'
+  } else {
+    $run_server_command = 'runserver'
+  }
+
   $source_env_activate = "source ${path}/bin/activate"
   $setup_kegbot = "${path}/bin/setup-kegbot.py --flagfile=${config_file}"
   $setup_server_command = "bash -c '${source_env_activate} && ${setup_kegbot} &> ${log_path}/setup.log'"
-  $run_server = "KEGBOT_SETTINGS_DIR=${config_path} ${path}/bin/kegbot runserver 0.0.0.0:${server_port} &> ${log_path}/server.log &"
+  $run_server = "KEGBOT_SETTINGS_DIR=${config_path} ${path}/bin/kegbot ${run_server_command} 127.0.0.1:${server_port} &> ${log_path}/server.log &"
   $run_workers = "${path}/bin/kegbot run_workers &> ${log_path}/workers.log &"
   $start_server_command = "bash -c '${source_env_activate} && ${run_server}'"
   $start_run_workers_command = "bash -c '${source_env_activate} && ${run_workers}'"
@@ -133,19 +140,24 @@ define kegbot::instance (
       user    => $user,
       group   => $group,
       require => File['create_config_file'];
-    'start_server':
-      command => $start_server_command,
-      user    => $user,
-      group   => $group;
-    'start_workers':
-      command => $start_run_workers_command,
-      user    => $user,
-      group   => $group;
   }
 
   Exec['create_virtualenv'] ->
   Class[$installer] ->
-  Exec['setup_server'] ->
-  Exec['start_server'] ->
-  Exec['start_workers']
+  Exec['setup_server']
+
+  if $start_server {
+    exec {
+      'start_server':
+        command => $start_server_command,
+        user    => $user,
+        group   => $group,
+        require => Exec['setup_server'];
+      'start_workers':
+        command => $start_run_workers_command,
+        user    => $user,
+        group   => $group,
+        require => Exec['setup_server'];
+    }
+  }
 }
