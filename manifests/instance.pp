@@ -149,6 +149,14 @@ define kegbot::instance (
   Class[$installer] ->
   Exec['setup_server']
 
+  if $debug_mode {
+    augeas{ 'updated_debug_mode':
+      context => "/files/${config_path}/local_settings.py",
+      changes => "set DEBUG FALSE",
+      require => Exec['setup_server'],
+    }
+  }
+
   if $start_server {
     exec {
       'start_server':
