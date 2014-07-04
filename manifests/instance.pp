@@ -18,16 +18,17 @@
 #   instance server group
 # [*database_name*]
 #   server database name
-# [*database_root_user*]
-#   server database root user
-# [*database_root_password*]
-#   server database root password
 # [*database_kegbot_user*]
 #   server applicaton database user
 # [*database_kegbot_password*]
 #   server applicaton database password
 #
 # === Variables
+#
+# [*::kegbot::database_root_user*]
+#   server database root user
+# [*::kegbot::database_root_password*]
+#   server database root password
 #
 # === Authors
 #
@@ -57,6 +58,8 @@ define kegbot::instance (
   $config_path = "${::kegbot::base_path}/${instance_name}/config"
   $log_path = "${::kegbot::base_path}/${instance_name}/log"
   $data_path = "${::kegbot::data_base_path}/${instance_name}/data"
+
+  # Data directory gets created by server setup
   $create_file_list = [$path, $config_path, $log_path]
 
   $config_file = "${config_path}/config.gflags"
@@ -117,10 +120,10 @@ define kegbot::instance (
     dbname          => $database_name,
     user            => $user,
     group           => $group,
-    root_user       => $database_root_user,
-    root_password   => $database_root_password,
+    root_user       => $::kegbot::database_root_user,
+    root_password   => $::kegbot::database_root_password,
     kegbot_user     => $database_kegbot_user,
-    kegbot_password => $kegbot_password,
+    kegbot_password => $database_kegbot_password,
     before          => Exec['setup_server']
   }
 

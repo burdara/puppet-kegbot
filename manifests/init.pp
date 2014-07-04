@@ -51,6 +51,7 @@ class kegbot (
     managehome => true,
     groups     => $groups,
   })
+
   $create_file_list = [$base_path]
   if $alt_data_base_path and $ald_data_base_path != $base_path {
     $data_base_path = $alt_data_base_path
