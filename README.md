@@ -1,7 +1,6 @@
 puppet-kegbot
 =================
-[![Build Status](https://travis-ci.org/burdara/puppet-kegbot.png?branch=develop)](https://travis-ci.org/burdara/puppet-kegbot)
-
+[![Build Status](https://travis-ci.org/burdara/puppet-kegbot.svg?branch=feature%2Flatest-server-changes)](https://travis-ci.org/burdara/puppet-kegbot)
 ## Overview
 
 Puppet module for automating the download and installation of Kegbot server.
